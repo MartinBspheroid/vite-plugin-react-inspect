@@ -14,6 +14,7 @@
     "play:nuxt": "pnpm run -r --filter=./packages/playground/nuxt dev",
     "play:vue3": "pnpm run -r --filter=./packages/playground/vue3 dev",
     "play:vue2": "pnpm run -r --filter=./packages/playground/vue2 dev",
+    "play:react": "pnpm run -r --filter=./packages/playground/react dev",
     "lint": "eslint --fix --ext .js,.ts,.vue .",
     "dev": "pnpm run -r --filter=./packages/core dev",
     "build": "pnpm run -r --filter=./packages/{core,unplugin} build",
@@ -30,7 +31,7 @@
     "tsup": "^7.2.0",
     "tsx": "^3.13.0",
     "typescript": "^5.2.2",
-    "vite": "^5.4.11",
+    "vite": "^7.0.0",
     "vite-plugin-inspect": "^0.7.40",
     "vue": "^3.3.4"
   },

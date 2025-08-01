@@ -33,7 +33,13 @@ export interface VueInspectorClient {
 
 export interface VitePluginInspectorOptions {
   /**
-   * Vue version
+   * Framework to use
+   * @default 'vue'
+   */
+  framework?: 'vue' | 'react'
+
+  /**
+   * Vue version (when using Vue framework)
    * @default 3
    */
   vue?: 2 | 3
@@ -134,6 +140,7 @@ export function normalizeComboKeyPrint(toggleComboKey: string) {
 }
 
 export const DEFAULT_INSPECTOR_OPTIONS: VitePluginInspectorOptions = {
+  framework: 'vue',
   vue: 3,
   enabled: false,
   toggleComboKey: process.platform === 'darwin' ? 'meta-shift' : 'control-shift',
@@ -154,9 +161,10 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
   let config: ResolvedConfig
 
   const {
+    framework,
     vue,
     appendTo,
-    cleanHtml = vue === 3, // Only enabled for Vue 3 by default
+    cleanHtml = framework === 'vue' && vue === 3, // Only enabled for Vue 3 by default
   } = normalizedOptions
 
   if (normalizedOptions.launchEditor)
@@ -171,17 +179,19 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
         return command === 'serve' && process.env.NODE_ENV !== 'test'
       },
       async resolveId(importee: string) {
-        if (importee.startsWith('virtual:vue-inspector-options')) {
+        if (importee.startsWith('virtual:vue-inspector-options') || importee.startsWith('virtual:react-inspector-options')) {
           return importee
         }
-        else if (importee.startsWith('virtual:vue-inspector-path:')) {
-          const resolved = importee.replace('virtual:vue-inspector-path:', `${inspectorPath}/`)
+        else if (importee.startsWith('virtual:vue-inspector-path:') || importee.startsWith('virtual:react-inspector-path:')) {
+          const resolved = importee
+            .replace('virtual:vue-inspector-path:', `${inspectorPath}/`)
+            .replace('virtual:react-inspector-path:', `${inspectorPath}/`)
           return resolved
         }
       },
 
       async load(id) {
-        if (id === 'virtual:vue-inspector-options') {
+        if (id === 'virtual:vue-inspector-options' || id === 'virtual:react-inspector-options') {
           return `export default ${JSON.stringify({ ...normalizedOptions, base: config.base })}`
         }
         else if (id.startsWith(inspectorPath)) {
@@ -189,11 +199,17 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
           if (query.type)
             return
           // read file ourselves to avoid getting shut out by vites fs.allow check
-          const file = idToFile(id)
+          let file = idToFile(id)
+          
+          // Handle React-specific file routing
+          if (framework === 'react' && file.endsWith('/load.js')) {
+            file = file.replace('/load.js', '/load-react.js')
+          }
+          
           if (fs.existsSync(file))
             return await fs.promises.readFile(file, 'utf-8')
           else
-            console.error(`failed to find file for vue-inspector: ${file}, referenced by id ${id}.`)
+            console.error(`failed to find file for inspector: ${file}, referenced by id ${id}.`)
         }
       },
       transform(code, id) {
@@ -201,16 +217,23 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
 
         const isJsx = filename.endsWith('.jsx') || filename.endsWith('.tsx') || (filename.endsWith('.vue') && query.isJsx)
         const isTpl = filename.endsWith('.vue') && query.type !== 'style' && !query.raw
+        const isReactComponent = framework === 'react' && (filename.endsWith('.jsx') || filename.endsWith('.tsx') || 
+          (filename.endsWith('.js') && code.includes('jsx')) || (filename.endsWith('.ts') && code.includes('jsx')))
 
-        if (isJsx || isTpl)
-          return compileSFCTemplate({ code, id: filename, type: isJsx ? 'jsx' : 'template' })
+        if (framework === 'vue' && (isJsx || isTpl)) {
+          return compileSFCTemplate({ code, id: filename, type: isJsx ? 'jsx' : 'template', framework: 'vue' })
+        }
+        else if (framework === 'react' && isReactComponent) {
+          return compileSFCTemplate({ code, id: filename, type: 'jsx', framework: 'react' })
+        }
 
         if (!appendTo)
           return
 
+        const virtualPath = framework === 'react' ? 'virtual:react-inspector-path:load.js' : 'virtual:vue-inspector-path:load.js'
         if ((typeof appendTo === 'string' && filename.endsWith(appendTo))
           || (appendTo instanceof RegExp && appendTo.test(filename)))
-          return { code: `${code}\nimport 'virtual:vue-inspector-path:load.js'` }
+          return { code: `${code}\nimport '${virtualPath}'` }
       },
       configureServer(server) {
         const _printUrls = server.printUrls
@@ -218,13 +241,15 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
 
         toggleComboKey && (server.printUrls = () => {
           const keys = normalizeComboKeyPrint(toggleComboKey)
+          const frameworkName = framework === 'react' ? 'React' : 'Vue'
           _printUrls()
-          console.log(`  ${green('➜')}  ${bold('Vue Inspector')}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
+          console.log(`  ${green('➜')}  ${bold(`${frameworkName} Inspector`)}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
         })
       },
       transformIndexHtml(html) {
         if (appendTo)
           return
+        const virtualPath = framework === 'react' ? 'virtual:react-inspector-path:load.js' : 'virtual:vue-inspector-path:load.js'
         return {
           html,
           tags: [
@@ -233,7 +258,7 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
               injectTo: 'head',
               attrs: {
                 type: 'module',
-                src: `${config.base || '/'}@id/virtual:vue-inspector-path:load.js`,
+                src: `${config.base || '/'}@id/${virtualPath}`,
               },
             },
           ],
@@ -248,7 +273,7 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
       enforce: 'post',
       apply(_, { command }) {
         // apply only on serve and not for test
-        return cleanHtml && vue === 3 && command === 'serve' && process.env.NODE_ENV !== 'test'
+        return cleanHtml && framework === 'vue' && vue === 3 && command === 'serve' && process.env.NODE_ENV !== 'test'
       },
       transform(code) {
         if (code.includes('_interopVNode'))
