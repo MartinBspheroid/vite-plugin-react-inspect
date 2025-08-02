@@ -5,11 +5,10 @@ import process from 'node:process'
 import { bold, dim, green, yellow } from 'kolorist'
 import { normalizePath } from 'vite'
 import type { PluginOption, ResolvedConfig } from 'vite'
-import MagicString from 'magic-string'
 import { compileSFCTemplate } from './compiler'
-import { idToFile, parseVueRequest } from './utils'
+import { idToFile, parseRequest } from './utils'
 
-export interface VueInspectorClient {
+export interface ReactInspectorClient {
   enabled: boolean
   position: {
     x: number
@@ -32,18 +31,6 @@ export interface VueInspectorClient {
 }
 
 export interface VitePluginInspectorOptions {
-  /**
-   * Framework to use
-   * @default 'vue'
-   */
-  framework?: 'vue' | 'react'
-
-  /**
-   * Vue version (when using Vue framework)
-   * @default 3
-   */
-  vue?: 2 | 3
-
   /**
    * Default enable state
    * @default false
@@ -102,15 +89,6 @@ export interface VitePluginInspectorOptions {
   disableInspectorOnEditorOpen?: boolean
 
   /**
-   * Hide information in VNode and produce clean html in DevTools
-   *
-   * Currently, it only works for Vue 3
-   *
-   * @default true
-   */
-  cleanHtml?: boolean
-
-  /**
    * Target editor when open in editor (v5.1.0+)
    *
    * @default process.env.LAUNCH_EDITOR ?? code (Visual Studio Code)
@@ -140,8 +118,6 @@ export function normalizeComboKeyPrint(toggleComboKey: string) {
 }
 
 export const DEFAULT_INSPECTOR_OPTIONS: VitePluginInspectorOptions = {
-  framework: 'vue',
-  vue: 3,
   enabled: false,
   toggleComboKey: process.platform === 'darwin' ? 'meta-shift' : 'control-shift',
   toggleButtonVisibility: 'active',
@@ -160,52 +136,40 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
   }
   let config: ResolvedConfig
 
-  const {
-    framework,
-    vue,
-    appendTo,
-    cleanHtml = framework === 'vue' && vue === 3, // Only enabled for Vue 3 by default
-  } = normalizedOptions
+  const { appendTo } = normalizedOptions
 
   if (normalizedOptions.launchEditor)
     process.env.LAUNCH_EDITOR = normalizedOptions.launchEditor
 
   return [
     {
-      name: 'vite-plugin-vue-inspector',
+      name: 'vite-plugin-react-inspector',
       enforce: 'pre',
       apply(_, { command }) {
         // apply only on serve and not for test
         return command === 'serve' && process.env.NODE_ENV !== 'test'
       },
       async resolveId(importee: string) {
-        if (importee.startsWith('virtual:vue-inspector-options') || importee.startsWith('virtual:react-inspector-options')) {
+        if (importee.startsWith('virtual:react-inspector-options'))
           return importee
-        }
-        else if (importee.startsWith('virtual:vue-inspector-path:') || importee.startsWith('virtual:react-inspector-path:')) {
-          const resolved = importee
-            .replace('virtual:vue-inspector-path:', `${inspectorPath}/`)
-            .replace('virtual:react-inspector-path:', `${inspectorPath}/`)
-          return resolved
-        }
+        else if (importee.startsWith('virtual:react-inspector-path:'))
+          return importee.replace('virtual:react-inspector-path:', `${inspectorPath}/`)
       },
 
       async load(id) {
-        if (id === 'virtual:vue-inspector-options' || id === 'virtual:react-inspector-options') {
+        if (id === 'virtual:react-inspector-options')
           return `export default ${JSON.stringify({ ...normalizedOptions, base: config.base })}`
-        }
         else if (id.startsWith(inspectorPath)) {
-          const { query } = parseVueRequest(id)
+          const { query } = parseRequest(id)
           if (query.type)
             return
           // read file ourselves to avoid getting shut out by vites fs.allow check
           let file = idToFile(id)
-          
-          // Handle React-specific file routing
-          if (framework === 'react' && file.endsWith('/load.js')) {
+
+          // Handle React-specific file routing - use load-react.js
+          if (file.endsWith('/load.js'))
             file = file.replace('/load.js', '/load-react.js')
-          }
-          
+
           if (fs.existsSync(file))
             return await fs.promises.readFile(file, 'utf-8')
           else
@@ -213,24 +177,19 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
         }
       },
       transform(code, id) {
-        const { filename, query } = parseVueRequest(id)
+        const { filename } = parseRequest(id)
 
-        const isJsx = filename.endsWith('.jsx') || filename.endsWith('.tsx') || (filename.endsWith('.vue') && query.isJsx)
-        const isTpl = filename.endsWith('.vue') && query.type !== 'style' && !query.raw
-        const isReactComponent = framework === 'react' && (filename.endsWith('.jsx') || filename.endsWith('.tsx') || 
-          (filename.endsWith('.js') && code.includes('jsx')) || (filename.endsWith('.ts') && code.includes('jsx')))
+        const isReactComponent = filename.endsWith('.jsx') || filename.endsWith('.tsx')
+          || (filename.endsWith('.js') && code.includes('jsx'))
+          || (filename.endsWith('.ts') && code.includes('jsx'))
 
-        if (framework === 'vue' && (isJsx || isTpl)) {
-          return compileSFCTemplate({ code, id: filename, type: isJsx ? 'jsx' : 'template', framework: 'vue' })
-        }
-        else if (framework === 'react' && isReactComponent) {
+        if (isReactComponent)
           return compileSFCTemplate({ code, id: filename, type: 'jsx', framework: 'react' })
-        }
 
         if (!appendTo)
           return
 
-        const virtualPath = framework === 'react' ? 'virtual:react-inspector-path:load.js' : 'virtual:vue-inspector-path:load.js'
+        const virtualPath = 'virtual:react-inspector-path:load.js'
         if ((typeof appendTo === 'string' && filename.endsWith(appendTo))
           || (appendTo instanceof RegExp && appendTo.test(filename)))
           return { code: `${code}\nimport '${virtualPath}'` }
@@ -241,15 +200,14 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
 
         toggleComboKey && (server.printUrls = () => {
           const keys = normalizeComboKeyPrint(toggleComboKey)
-          const frameworkName = framework === 'react' ? 'React' : 'Vue'
           _printUrls()
-          console.log(`  ${green('➜')}  ${bold(`${frameworkName} Inspector`)}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
+          console.log(`  ${green('➜')}  ${bold('React Inspector')}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
         })
       },
       transformIndexHtml(html) {
         if (appendTo)
           return
-        const virtualPath = framework === 'react' ? 'virtual:react-inspector-path:load.js' : 'virtual:vue-inspector-path:load.js'
+        const virtualPath = 'virtual:react-inspector-path:load.js'
         return {
           html,
           tags: [
@@ -266,50 +224,6 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
       },
       configResolved(resolvedConfig) {
         config = resolvedConfig
-      },
-    },
-    {
-      name: 'vite-plugin-vue-inspector:post',
-      enforce: 'post',
-      apply(_, { command }) {
-        // apply only on serve and not for test
-        return cleanHtml && framework === 'vue' && vue === 3 && command === 'serve' && process.env.NODE_ENV !== 'test'
-      },
-      transform(code) {
-        if (code.includes('_interopVNode'))
-          return
-        if (!code.includes('data-v-inspector'))
-          return
-
-        const fn = new Set<string>()
-        const s = new MagicString(code)
-
-        s.replace(/(createElementVNode|createVNode|createElementBlock|createBlock) as _\1,?/g, (_, name) => {
-          fn.add(name)
-          return ''
-        })
-
-        if (!fn.size)
-          return
-
-        s.appendLeft(0, `/* Injection by vite-plugin-vue-inspector Start */
-import { ${Array.from(fn.values()).map(i => `${i} as __${i}`).join(',')} } from 'vue'
-function _interopVNode(vnode) {
-  if (vnode && vnode.props && 'data-v-inspector' in vnode.props) {
-    const data = vnode.props['data-v-inspector']
-    delete vnode.props['data-v-inspector']
-    Object.defineProperty(vnode.props, '__v_inspector', { value: data, enumerable: false })
-  }
-  return vnode
-}
-${Array.from(fn.values()).map(i => `function _${i}(...args) { return _interopVNode(__${i}(...args)) }`).join('\n')}
-/* Injection by vite-plugin-vue-inspector End */
-`)
-
-        return {
-          code: s.toString(),
-          map: s.generateMap({ hires: 'boundary' }),
-        }
       },
     },
   ]

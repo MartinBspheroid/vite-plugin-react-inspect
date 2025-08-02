@@ -1,3 +1,3 @@
-import type { VitePluginInspectorOptions } from 'vite-plugin-vue-inspector'
+import type { VitePluginInspectorOptions } from 'vite-plugin-react-inspector'
 export interface Options extends VitePluginInspectorOptions {
 }

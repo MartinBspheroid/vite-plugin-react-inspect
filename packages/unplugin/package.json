@@ -1,19 +1,19 @@
 {
-  "name": "unplugin-vue-inspector",
+  "name": "unplugin-react-inspector",
   "version": "2.3.2",
-  "description": "jump to local IDE source code while click the element of browser automatically.",
+  "description": "jump to local IDE source code while click the element of browser automatically. Supports React.",
   "author": "webfansplz",
   "license": "MIT",
-  "homepage": "https://github.com/webfansplz/vite-plugin-vue-inspector#readme",
+  "homepage": "https://github.com/webfansplz/vite-plugin-react-inspector#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webfansplz/vite-plugin-vue-inspector.git"
+    "url": "git+https://github.com/webfansplz/vite-plugin-react-inspector.git"
   },
   "bugs": {
-    "url": "https://github.com/webfansplz/vite-plugin-vue-inspector/issues"
+    "url": "https://github.com/webfansplz/vite-plugin-react-inspector/issues"
   },
   "keywords": [
-    "vue",
+    "react",
     "vite",
     "vscode",
     "unplugin",
@@ -61,7 +61,8 @@
   },
   "dependencies": {
     "kolorist": "^1.8.0",
-    "unplugin": "^1.5.0"
+    "unplugin": "^1.5.0",
+    "vite-plugin-react-inspector": "workspace:*"
   },
   "devDependencies": {
     "chalk": "^5.3.0",

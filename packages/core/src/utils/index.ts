@@ -1,4 +1,4 @@
-export interface VueQuery {
+export interface ParseQuery {
   vue?: boolean
   src?: boolean
   type?: 'script' | 'template' | 'style' | 'custom'
@@ -20,10 +20,10 @@ interface JSXMemberExpression {
   property: JSXIdentifier
 }
 
-export function parseVueRequest(id: string) {
+export function parseRequest(id: string) {
   const [filename] = id.split('?', 2)
   const url = new URL(id, 'http://domain.inspector')
-  const query = Object.fromEntries(url.searchParams.entries()) as VueQuery
+  const query = Object.fromEntries(url.searchParams.entries()) as ParseQuery
   if (query.vue != null)
     query.vue = true
 

@@ -1,16 +1,16 @@
 import { createUnplugin } from 'unplugin'
-import VitePluginInspector from 'vite-plugin-vue-inspector'
+import VitePluginInspector from 'vite-plugin-react-inspector'
 import type { Options } from './types'
 
 export default createUnplugin<Options, true>((options) => {
   const plugins = VitePluginInspector(options) as any
   return [
     {
-      name: 'unplugin-vue-inspector',
+      name: 'unplugin-react-inspector',
       vite: plugins[0],
     },
     {
-      name: 'unplugin-vue-inspector:post',
+      name: 'unplugin-react-inspector:post',
       vite: plugins[1],
     },
   ]

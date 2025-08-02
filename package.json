@@ -11,11 +11,8 @@
     "url": "https://github.com/webfansplz/vite-plugin-vue-inspector/issues"
   },
   "scripts": {
-    "play:nuxt": "pnpm run -r --filter=./packages/playground/nuxt dev",
-    "play:vue3": "pnpm run -r --filter=./packages/playground/vue3 dev",
-    "play:vue2": "pnpm run -r --filter=./packages/playground/vue2 dev",
     "play:react": "pnpm run -r --filter=./packages/playground/react dev",
-    "lint": "eslint --fix --ext .js,.ts,.vue .",
+    "lint": "eslint --fix --ext .js,.ts,.tsx,.jsx .",
     "dev": "pnpm run -r --filter=./packages/core dev",
     "build": "pnpm run -r --filter=./packages/{core,unplugin} build",
     "release": "pnpm build && changeset && changeset version && changeset publish"

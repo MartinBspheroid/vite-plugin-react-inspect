@@ -1,38 +1,33 @@
-
 <p align="center">
-<a href="https://github.com/webfansplz/vite-plugin-vue-inspector"><img src="./logo.svg" width="180" alt="vite-plugin-vue-inspector"></a>
+<a href="https://github.com/webfansplz/vite-plugin-react-inspector"><img src="./logo.svg" width="180" alt="vite-plugin-react-inspector"></a>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/vite-plugin-vue-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/v/vite-plugin-vue-inspector" alt="NPM Version" /></a>
-  <a href="https://www.npmjs.com/package/vite-plugin-vue-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/dt/vite-plugin-vue-inspector" alt="NPM Downloads" /></a>
-  <a href="https://github.com/webfansplz/vite-plugin-vue-inspector/blob/master/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/webfansplz/vite-plugin-vue-inspector" alt="License" /></a>
+  <a href="https://www.npmjs.com/package/vite-plugin-react-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/v/vite-plugin-react-inspector" alt="NPM Version" /></a>
+  <a href="https://www.npmjs.com/package/vite-plugin-react-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/dt/vite-plugin-react-inspector" alt="NPM Downloads" /></a>
+  <a href="https://github.com/webfansplz/vite-plugin-react-inspector/blob/master/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/webfansplz/vite-plugin-react-inspector" alt="License" /></a>
 </p>
 
 <p align="center">
-<a href="https://stackblitz.com/edit/vitejs-vite-rbr2as?file=src%2FApp.vue"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt=""></a>
+<a href="https://stackblitz.com/edit/vitejs-vite-rbr2as?file=src%2FApp.tsx"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt=""></a>
 </p>
 
 ## 📖 Introduction
 
-A vite plugin which provides the ability that to jump to the local IDE when you click the element of browser automatically. It supports Vue2 & 3 & SSR.
+A vite plugin which provides the ability that to jump to the local IDE when you click the element of browser automatically. It supports React.
 
 <p align="center">
-<img src="./public/preview.gif" alt="vite-plugin-vue-inspector">
+<img src="./public/preview.gif" alt="vite-plugin-react-inspector">
 </p>
 
 ## 📦 Installation
 
 ```bash
+# vite-plugin-react-inspector 
+pnpm install vite-plugin-react-inspector -D
 
-# vite-plugin-vue-inspector 
-
-pnpm install vite-plugin-vue-inspector -D
-
-# unplugin-vue-inspector
-
-pnpm install unplugin-vue-inspector -D
-
+# unplugin-react-inspector
+pnpm install unplugin-react-inspector -D
 ```
 
 ## 🦄 Usage
@@ -40,63 +35,26 @@ pnpm install unplugin-vue-inspector -D
 ### Configuration Vite
 
 ```ts
-// for Vue2
+// for React
+import { defineConfig } from 'vite'
+import React from '@vitejs/plugin-react'
 
-import { defineConfig, } from 'vite'
-import { createVuePlugin, } from 'vite-plugin-vue2'
-
-import Inspector from 'unplugin-vue-inspector/vite' // OR vite-plugin-vue-inspector
+import Inspector from 'vite-plugin-react-inspector' // OR unplugin-react-inspector/vite
 
 export default defineConfig({
   plugins: [
-    createVuePlugin(),
+    React(), 
     Inspector({
-      vue: 2
-    }),
-  ],
-})
-```
-
-```ts
-// for Vue3
-
-import { defineConfig } from 'vite'
-import Vue from '@vitejs/plugin-vue'
-
-import Inspector from 'unplugin-vue-inspector/vite' // OR vite-plugin-vue-inspector
-
-export default defineConfig({
-  plugins: [Vue(), Inspector()],
-})
-```
-
-```ts
-// for Nuxt3
-// nuxt.config.ts
-import { defineNuxtConfig } from 'nuxt/config'
-import Inspector from 'vite-plugin-vue-inspector'
-
-export default defineNuxtConfig({
-  modules: [
-    ['unplugin-vue-inspector/nuxt', {
-      enabled: true,
-      toggleButtonVisibility: 'always',
-    }],
+      enabled: true
+    })
   ],
 })
 ```
 
 ### Options
 
-
 ```ts
 interface VitePluginInspectorOptions {
-  /**
-   * Vue version
-   * @default 3
-   */
-  vue?: 2 | 3
-
   /**
    * Default enable state
    * @default false
@@ -155,15 +113,6 @@ interface VitePluginInspectorOptions {
   disableInspectorOnEditorOpen?: boolean
 
   /**
-   * Hide information in VNode and produce clean html in DevTools
-   *
-   * Currently, it only works for Vue 3
-   *
-   * @default true
-   */
-  cleanHtml?: boolean
-
-  /**
    * Target editor when open in editor (v5.1.0+)
    *
    * @default code (Visual Studio Code)
@@ -174,9 +123,7 @@ interface VitePluginInspectorOptions {
 
 ### Example
 
-- [Vue2](https://github.com/webfansplz/vite-plugin-vue-inspector/tree/main/packages/playground/vue2)
-- [Vue3](https://github.com/webfansplz/vite-plugin-vue-inspector/tree/main/packages/playground/vue3)
-- [Nuxt3](https://github.com/webfansplz/vite-plugin-vue-inspector/tree/main/packages/playground/nuxt)
+- [React](https://github.com/webfansplz/vite-plugin-react-inspector/tree/main/packages/playground/react)
 
 ## Supported editors
 
@@ -210,7 +157,6 @@ It uses an **environment variable** named **`LAUNCH_EDITOR`** to specify an IDE 
 
 For example, if you want it always open VS Code when inspection clicked, set `export LAUNCH_EDITOR=code` in your shell.
 
-
 ### VS Code
 
 - install VS Code command line tools, [see the official docs](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line)
@@ -223,7 +169,6 @@ For example, if you want it always open VS Code when inspection clicked, set `ex
   ```
 
 <br />
-
 
 ### VS Code with WSL (Windows)
 
@@ -240,7 +185,6 @@ For example, if you want it always open VS Code when inspection clicked, set `ex
   }
 }
 ```
-
 
 ### WebStorm  
 
@@ -300,12 +244,12 @@ export LAUNCH_EDITOR=vim
 
 ## 👨‍💻 Programmatic Usage
 
-You can also use control inspector programmatically, by accessing the `__VUE_INSPECTOR__` global variable.
+You can also use control inspector programmatically, by accessing the `__REACT_INSPECTOR__` global variable.
 
 ```ts
-import type { VueInspectorClient } from 'vite-plugin-vue-inspector'
+import type { ReactInspectorClient } from 'vite-plugin-react-inspector'
 
-const inspector: VueInspectorClient = window.__VUE_INSPECTOR__
+const inspector: ReactInspectorClient = window.__REACT_INSPECTOR__
 
 if (inspector) {
   // enable inspector
@@ -323,7 +267,8 @@ Partially implementation is inspired by [vite-plugin-svelte-inspector](https://g
 
 ## 🤖️ Analysis of Theory
 
-[Chinese] [点击页面元素,这个Vite插件帮我打开了Vue组件](https://juejin.cn/post/7077347158545924127)
+[Chinese] [点击页面元素,这个Vite插件帮我打开了React组件](https://juejin.cn/post/7077347158545924127)
+
 ## 📄 License
 
 [MIT LICENSE](./LICENSE)

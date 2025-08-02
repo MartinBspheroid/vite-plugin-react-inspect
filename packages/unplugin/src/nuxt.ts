@@ -1,5 +1,5 @@
 import { green, yellow } from 'kolorist'
-import { DEFAULT_INSPECTOR_OPTIONS, normalizeComboKeyPrint } from 'vite-plugin-vue-inspector'
+import { DEFAULT_INSPECTOR_OPTIONS, normalizeComboKeyPrint } from 'vite-plugin-react-inspector'
 import type { Options } from './types'
 import unplugin from '.'
 
@@ -18,7 +18,7 @@ export default (options: Options, nuxt: any) => {
     if (printed || !toggleComboKey)
       return
     const keys = normalizeComboKeyPrint(toggleComboKey)
-    console.log(`  ${'> Vue Inspector'}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
+    console.log(`  ${'> React Inspector'}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
     printed = true
   })
 }
