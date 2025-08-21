@@ -6,37 +6,31 @@ import React, {
   useState,
 } from 'react'
 
-// @ts-expect-error
+// @ts-expect-ignore
 import inspectorOptions from 'virtual:react-inspector-options'
+import { KEY_IGNORE, getTargetNode } from './utils/react-fiber'
+import { createKeydownHandler, parseToggleCombo } from './utils/keyboard'
+import {
+  calculateBannerPosition,
+  calculateFloatPosition,
+  calculateSizeIndicatorStyle,
+  getElementRect,
+  parseToggleButtonPosition,
+} from './utils/positioning'
+import {
+  createEmptyLinkParams,
+  createOpenInEditorHandler,
+  createOpenInEditorUrl,
+  shouldShowContainer,
+} from './utils/editor'
 
 const base = inspectorOptions.base
-
-const KEY_DATA = 'data-react-inspector'
-const KEY_IGNORE = 'data-react-inspector-ignore'
-const KEY_PROPS_DATA = '__react_inspector'
-
-function getData(el) {
-  return (
-    el?.__reactInternalInstance?.memoizedProps?.[KEY_PROPS_DATA]
-    ?? getComponentData(el)
-    ?? el?.getAttribute?.(KEY_DATA)
-  )
-}
-
-function getComponentData(el) {
-  // For React, try to get data from fiber node
-  const fiberNode = el?._reactInternalFiber ?? el?.__reactInternalInstance
-  if (fiberNode?.return?.memoizedProps?.[KEY_PROPS_DATA])
-    return fiberNode.return.memoizedProps[KEY_PROPS_DATA]
-
-  return null
-}
 
 function ReactInspectorOverlay() {
   const containerRef = useRef(null)
   const floatsRef = useRef(null)
 
-  const [enabled, setEnabled] = useState(inspectorOptions.enabled)
+  const [enabled, setEnabled] = useState(false)
   const [overlayVisible, setOverlayVisible] = useState(false)
   const [position, setPosition] = useState({
     x: 0,
@@ -44,215 +38,53 @@ function ReactInspectorOverlay() {
     width: 0,
     height: 0,
   })
-  const [linkParams, setLinkParams] = useState({
-    file: '',
-    line: 0,
-    column: 0,
-    title: '',
-  })
+  const [linkParams, setLinkParams] = useState(createEmptyLinkParams)
 
-  const toggleCombo
-    = inspectorOptions.toggleComboKey?.toLowerCase?.()?.split?.('-') ?? false
-  const disableInspectorOnEditorOpen
-    = inspectorOptions.disableInspectorOnEditorOpen
+  const toggleCombo = parseToggleCombo(inspectorOptions.toggleComboKey)
+  const disableInspectorOnEditorOpen = inspectorOptions.disableInspectorOnEditorOpen
   const animation = !inspectorOptions.reduceMotion
 
-  const logoColors = useMemo(() => {
-    return enabled
-      ? ['#42D392', '#213547', '#42b883']
-      : ['#E2C6C6', '#E2C6C6', '#E2C6C6']
-  }, [enabled])
-
   const containerVisible = useMemo(() => {
-    const { toggleButtonVisibility } = inspectorOptions
-    return (
-      toggleButtonVisibility === 'always'
-      || (toggleButtonVisibility === 'active' && enabled)
-    )
+    return shouldShowContainer(inspectorOptions.toggleButtonVisibility, enabled)
   }, [enabled])
 
   const containerPosition = useMemo(() => {
-    return inspectorOptions.toggleButtonPos
-      .split('-')
-      .map(p => `${p}: 15px;`)
-      .join('')
+    return parseToggleButtonPosition(inspectorOptions.toggleButtonPos)
   }, [])
 
   const bannerPosition = useMemo(() => {
-    const [x, y] = inspectorOptions.toggleButtonPos.split('-')
-    return {
-      [x === 'top' ? 'bottom' : 'top']: '-45px',
-      [y]: 0,
-    }
+    return calculateBannerPosition(inspectorOptions.toggleButtonPos)
   }, [])
 
   const floatsStyle = useMemo(() => {
-    let margin = 10
-    let x = position.x + position.width / 2
-    let y = position.y + position.height + 5
-    const floatsElement = floatsRef.current
-    let floatsWidth = floatsElement?.clientWidth ?? 0
-    let floatsHeight = floatsElement?.clientHeight ?? 0
-
-    x = Math.max(margin, x)
-    x = Math.min(x, window.innerWidth - floatsWidth - margin)
-    if (x < floatsWidth / 2)
-      x = floatsWidth / 2 + margin
-
-    y = Math.max(margin, y)
-    y = Math.min(y, window.innerHeight - floatsHeight - margin)
-
-    return {
-      left: `${x}px`,
-      top: `${y}px`,
-    }
+    return calculateFloatPosition(position, floatsRef.current)
   }, [position])
 
   const sizeIndicatorStyle = useMemo(() => {
-    return {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-      width: `${position.width}px`,
-      height: `${position.height}px`,
-    }
+    return calculateSizeIndicatorStyle(position)
   }, [position])
-
-  const isKeyActive = useCallback((key, event) => {
-    switch (key) {
-      case 'shift':
-      case 'control':
-      case 'alt':
-      case 'meta':
-        return event.getModifierState(
-          key.charAt(0).toUpperCase() + key.slice(1),
-        )
-      default:
-        return key === event.key.toLowerCase()
-    }
-  }, [])
-
-  const onKeydown = useCallback(
-    (event) => {
-      if (event.repeat || event.key === undefined)
-        return
-
-      const isCombo = toggleCombo?.every(key => isKeyActive(key, event))
-      if (isCombo)
-        toggleEnabled()
-    },
-    [toggleCombo, isKeyActive],
-  )
 
   const isChildOf = useCallback((ele, target) => {
     if (!ele || ele === document)
       return false
     return ele === target ? true : isChildOf(ele.parentNode, target)
   }, [])
-
-  const getTargetNode = useCallback((e) => {
-    const splitRE = /(.+):([\d]+):([\d]+)$/
-    const path = e.path ?? e.composedPath()
-    if (!path) {
-      return {
-        targetNode: null,
-        params: null,
-      }
-    }
-    const ignoreIndex = path.findIndex(node =>
-      node?.hasAttribute?.(KEY_IGNORE),
-    )
-    const targetNode = path
-      .slice(ignoreIndex + 1)
-      .find(node => getData(node))
-    if (!targetNode) {
-      return {
-        targetNode: null,
-        params: null,
-      }
-    }
-    const match = getData(targetNode)?.match(splitRE)
-    const [_, file, line, column] = match || []
-    return {
-      targetNode,
-      params: match
-        ? {
-            file,
-            line,
-            column,
-            title: file,
-          }
-        : null,
-    }
+  const onUpdated = useCallback(() => {
+    // to be replaced programmatically
   }, [])
 
-  const handleClick = useCallback(
-    (e) => {
-      const { targetNode, params } = getTargetNode(e)
-      if (!targetNode)
-        return
+  const onEnabled = useCallback(() => {
+    // to be replaced programmatically
+  }, [])
 
-      e.preventDefault()
-      e.stopPropagation()
-      e.stopImmediatePropagation()
-
-      const { file, line, column } = params
-      setOverlayVisible(false)
-
-      const url = new URL(
-        `${base}__open-in-editor?file=${encodeURIComponent(
-          `${file}:${line}:${column}`,
-        )}`,
-        import.meta.url,
-      )
-      openInEditor(url)
-    },
-    [getTargetNode, base],
-  )
-
-  const updateLinkParams = useCallback(
-    (e) => {
-      const { targetNode, params } = getTargetNode(e)
-      if (targetNode) {
-        const rect = targetNode.getBoundingClientRect()
-        setOverlayVisible(true)
-        setPosition({
-          x: rect.x,
-          y: rect.y,
-          width: rect.width,
-          height: rect.height,
-        })
-        setLinkParams(params)
-      }
-      else {
-        closeOverlay()
-      }
-      onUpdated()
-    },
-    [getTargetNode],
-  )
-
-  const closeOverlay = useCallback(() => {
-    setOverlayVisible(false)
-    setLinkParams({
-      file: '',
-      line: 0,
-      column: 0,
-      title: '',
-    })
+  const onDisabled = useCallback(() => {
+    // to be replaced programmatically
   }, [])
 
   const toggleEnabled = useCallback(() => {
     setEnabled(prev => !prev)
     setOverlayVisible(false)
   }, [])
-
-  const toggleEventListener = useCallback(() => {
-    const listener = enabled ? 'addEventListener' : 'removeEventListener'
-
-    document.body[listener]('mousemove', updateLinkParams)
-    document.body[listener]('resize', closeOverlay, true)
-    document.body[listener]('click', handleClick, true)
-  }, [enabled, updateLinkParams, closeOverlay, handleClick])
 
   const enable = useCallback(() => {
     if (enabled)
@@ -266,37 +98,68 @@ function ReactInspectorOverlay() {
     toggleEnabled()
   }, [enabled, toggleEnabled])
 
-  const openInEditor = useCallback(
-    (baseUrl, file, line, column) => {
-      const _url
-        = baseUrl instanceof URL
-          ? baseUrl
-          : `${baseUrl}/__open-in-editor?file=${encodeURIComponent(
-              `${file}:${line}:${column}`,
-            )}`
-      const promise = fetch(_url, {
-        mode: 'no-cors',
-      })
+  const closeOverlay = useCallback(() => {
+    setOverlayVisible(false)
+    setLinkParams(createEmptyLinkParams())
+  }, [])
 
-      if (disableInspectorOnEditorOpen)
-        promise.then(disable)
+  const openInEditor = useMemo(() => {
+    return createOpenInEditorHandler(base, disableInspectorOnEditorOpen, disable)
+  }, [disableInspectorOnEditorOpen, disable])
 
-      return promise
+  const handleClick = useCallback(
+    (e) => {
+      const { targetNode, params } = getTargetNode(e)
+      if (!targetNode)
+        return
+
+      e.preventDefault()
+      e.stopPropagation()
+      e.stopImmediatePropagation()
+
+      const { file, line, column } = params
+      setOverlayVisible(false)
+      setEnabled(false)
+
+      const url = createOpenInEditorUrl(base, file, line, column)
+      openInEditor(url)
     },
-    [disableInspectorOnEditorOpen, disable],
+    [base, openInEditor],
   )
 
-  const onUpdated = useCallback(() => {
-    // to be replaced programmatically
-  }, [])
+  const updateLinkParams = useCallback(
+    (e) => {
+      const { targetNode, params } = getTargetNode(e)
+      if (targetNode) {
+        const rect = getElementRect(targetNode)
+        setOverlayVisible(true)
+        setPosition(rect)
+        setLinkParams(params)
+      }
+      else {
+        closeOverlay()
+      }
+      onUpdated()
+    },
+    [onUpdated, closeOverlay],
+  )
 
-  const onEnabled = useCallback(() => {
-    // to be replaced programmatically
-  }, [])
+  useEffect(() => {
+    console.log("Overlay changed to ", overlayVisible)
+    console.log("Enabled", enabled)
+  }, [overlayVisible, enabled])
 
-  const onDisabled = useCallback(() => {
-    // to be replaced programmatically
-  }, [])
+  const onKeydown = useMemo(() => {
+    return createKeydownHandler(toggleCombo, toggleEnabled)
+  }, [toggleCombo, toggleEnabled])
+
+  const toggleEventListener = useCallback(() => {
+    const listener = enabled ? 'addEventListener' : 'removeEventListener'
+
+    document.body[listener]('mousemove', updateLinkParams)
+    document.body[listener]('resize', closeOverlay, true)
+    document.body[listener]('click', handleClick, true)
+  }, [enabled, updateLinkParams, closeOverlay, handleClick])
 
   useEffect(() => {
     if (toggleCombo) {
@@ -339,8 +202,7 @@ function ReactInspectorOverlay() {
   useEffect(() => {
     if (enabled)
       onEnabled()
-    else
-      onDisabled()
+    else onDisabled()
   }, [enabled, onEnabled, onDisabled])
 
   return (
@@ -357,21 +219,15 @@ function ReactInspectorOverlay() {
             textAlign: 'center',
             zIndex: 2147483647,
             fontFamily: 'Arial, Helvetica, sans-serif',
-            ...Object.fromEntries(
-              containerPosition
-                .split(';')
-                .filter(Boolean)
-                .map(s => s.split(': ')),
-            ),
+            ...containerPosition,
           }}
         >
           {/* Logo */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
             aria-hidden="true"
             role="img"
-            class="iconify iconify--logos"
+            className="iconify iconify--logos"
             width="35.93"
             height="32"
             preserveAspectRatio="xMidYMid meet"
