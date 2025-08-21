@@ -46,9 +46,6 @@ export function InspectorOverlay({
       <div>
         {linkParams.title}:{linkParams.line}:{linkParams.column}
       </div>
-      <div style={{ fontSize: '11px', opacity: 0.7 }}>
-        Click to go to the file
-      </div>
     </div>
   )
 }

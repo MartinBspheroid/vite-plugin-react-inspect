@@ -17,9 +17,10 @@ interface CompileSFCTemplateOptions {
   framework: 'react'
 }
 export async function compileSFCTemplate(
-  { code, id, type, framework }: CompileSFCTemplateOptions,
+  { code, id }: CompileSFCTemplateOptions,
 ) {
   const s = new MagicString(code)
+  // eslint-disable-next-line n/prefer-global/process
   const relativePath = normalizePath(path.relative(process.cwd(), id))
   const keyData = KEY_DATA_REACT
 

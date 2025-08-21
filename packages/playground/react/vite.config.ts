@@ -5,9 +5,10 @@ import Inspector from 'vite-plugin-react-inspector'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
     Inspector({
       enabled: true,
     }),
+    react(),
+
   ],
 })
