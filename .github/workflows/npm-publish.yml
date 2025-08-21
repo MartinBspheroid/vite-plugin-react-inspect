@@ -49,11 +49,25 @@ jobs:
       - name: Copy LICENSE to core package
         run: cp LICENSE packages/core/LICENSE
 
+      # Get version from tag
+      - name: Get version from tag
+        id: get_version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
       # Rename package for npm publishing
       - name: Update package name for publishing
         run: cd packages/core && npm pkg set name="vite-plugin-react-inspect"
 
-      - name: Publish Package
+      - name: Publish Core Package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: cd packages/core && npm publish
+
+      # Update unplugin package dependency and publish
+      - name: Update unplugin dependency and publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd packages/unplugin
+          npm pkg set dependencies.vite-plugin-react-inspector="vite-plugin-react-inspect@^${{ steps.get_version.outputs.version }}"
+          npm publish

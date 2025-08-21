@@ -1,10 +1,10 @@
 <p align="center">
-<a href="https://github.com/webfansplz/vite-plugin-react-inspector"><img src="./logo.svg" width="180" alt="vite-plugin-react-inspector"></a>
+<a href="https://github.com/webfansplz/vite-plugin-react-inspector"><img src="./logo.svg" width="180" alt="vite-plugin-react-inspect"></a>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/vite-plugin-react-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/v/vite-plugin-react-inspector" alt="NPM Version" /></a>
-  <a href="https://www.npmjs.com/package/vite-plugin-react-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/dt/vite-plugin-react-inspector" alt="NPM Downloads" /></a>
+  <a href="https://www.npmjs.com/package/vite-plugin-react-inspect" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/v/vite-plugin-react-inspect" alt="NPM Version" /></a>
+  <a href="https://www.npmjs.com/package/vite-plugin-react-inspect" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/dt/vite-plugin-react-inspect" alt="NPM Downloads" /></a>
   <a href="https://github.com/webfansplz/vite-plugin-react-inspector/blob/master/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/webfansplz/vite-plugin-react-inspector" alt="License" /></a>
 </p>
 
@@ -12,25 +12,25 @@
 <a href="https://stackblitz.com/edit/vitejs-vite-rbr2as?file=src%2FApp.tsx"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt=""></a>
 </p>
 
-## 📖 Introduction
+## Introduction
 
 A vite plugin which provides the ability that to jump to the local IDE when you click the element of browser automatically. It supports React.
 
 <p align="center">
-<img src="./public/preview.gif" alt="vite-plugin-react-inspector">
+<img src="./public/preview.gif" alt="vite-plugin-react-inspect">
 </p>
 
-## 📦 Installation
+## Installation
 
 ```bash
-# vite-plugin-react-inspector
-pnpm install vite-plugin-react-inspector -D
+# vite-plugin-react-inspect
+pnpm install vite-plugin-react-inspect -D
 
 # unplugin-react-inspector
 pnpm install unplugin-react-inspector -D
 ```
 
-## 🦄 Usage
+## Usage
 
 ### Configuration Vite
 
@@ -39,7 +39,7 @@ import React from '@vitejs/plugin-react'
 // for React
 import { defineConfig } from 'vite'
 
-import Inspector from 'vite-plugin-react-inspector' // OR unplugin-react-inspector/vite
+import Inspector from 'vite-plugin-react-inspect' // OR unplugin-react-inspector/vite
 
 export default defineConfig({
   plugins: [
@@ -113,11 +113,17 @@ interface VitePluginInspectorOptions {
   disableInspectorOnEditorOpen?: boolean
 
   /**
-   * Target editor when open in editor (v5.1.0+)
+   * Target editor when open in editor
    *
-   * @default code (Visual Studio Code)
+   * @default process.env.LAUNCH_EDITOR ?? 'code' (Visual Studio Code)
    */
-  launchEditor?: 'appcode' | 'atom' | 'atom-beta' | 'brackets' | 'clion' | 'code' | 'code-insiders' | 'codium' | 'emacs' | 'idea' | 'notepad++' | 'pycharm' | 'phpstorm' | 'rubymine' | 'sublime' | 'vim' | 'visualstudio' | 'webstorm' | 'cursor'
+  launchEditor?: 'appcode' | 'atom' | 'atom-beta' | 'brackets' | 'clion' | 'code' | 'code-insiders' | 'codium' | 'emacs' | 'idea' | 'notepad++' | 'pycharm' | 'phpstorm' | 'rubymine' | 'sublime' | 'vim' | 'visualstudio' | 'webstorm' | 'rider' | 'cursor' | string
+
+  /**
+   * Disable animation/transition, will auto disable when `prefers-reduced-motion` is set
+   * @default false
+   */
+  reduceMotion?: boolean
 }
 ```
 
@@ -147,11 +153,12 @@ interface VitePluginInspectorOptions {
 | `vim` | [Vim](http://www.vim.org/) |✓| | |
 | `visualstudio` | [Visual Studio](https://www.visualstudio.com/vs/) | | |✓|
 | `webstorm` | [WebStorm](https://www.jetbrains.com/webstorm/) |✓|✓|✓|
+| `rider` | [Rider](https://www.jetbrains.com/rider/) |✓|✓|✓|
 | `cursor` | [Cursor](https://www.cursor.com/) |✓|✓|✓|
 
-## 🔌  Configuration IDE / Editor
+## Configuration IDE / Editor
 
-**Starting from v5.1.0, We recommend using the `launchEditor` option configuration to specify the IDE** (Please ensure that the editor's environment variables are correctly configured beforehand.)
+**We recommend using the `launchEditor` option configuration to specify the IDE** (Please ensure that the editor's environment variables are correctly configured beforehand.)
 
 It uses an **environment variable** named **`LAUNCH_EDITOR`** to specify an IDE application, but if you do not set this variable, it will try to open a common IDE that you have open or installed once it is certified.
 
@@ -236,18 +243,18 @@ export LAUNCH_EDITOR=vim
 
 <br />
 
-## 💡 Notice
+## Notice
 
 - **[BREAKING CHANGE] From v1.0, `enabled` option default value changed from `true` to `false` .**
 - It only work in develop mode .
 - It does not currently support `Template Engine (e.g. pug)` .
 
-## 👨‍💻 Programmatic Usage
+## Programmatic Usage
 
 You can also use control inspector programmatically, by accessing the `__REACT_INSPECTOR__` global variable.
 
 ```ts
-import type { ReactInspectorClient } from 'vite-plugin-react-inspector'
+import type { ReactInspectorClient } from 'vite-plugin-react-inspect'
 
 const inspector: ReactInspectorClient = window.__REACT_INSPECTOR__
 
@@ -259,7 +266,7 @@ if (inspector) {
 }
 ```
 
-## 🌸 Credits
+## Credits
 
 This project is heavily based on [vite-plugin-vue-inspector](https://github.com/webfansplz/vite-plugin-vue-inspector) by webfansplz, adapted for React.
 
@@ -267,10 +274,10 @@ This project is also inspired by [react-dev-inspector](https://github.com/zthxxx
 
 Partially implementation is inspired by [vite-plugin-svelte-inspector](https://github.com/sveltejs/vite-plugin-svelte/tree/main/packages/vite-plugin-svelte-inspector) .
 
-## 🤖️ Analysis of Theory
+## Analysis of Theory
 
 [Chinese] [点击页面元素,这个Vite插件帮我打开了React组件](https://juejin.cn/post/7077347158545924127)
 
-## 📄 License
+## License
 
 [MIT LICENSE](./LICENSE)
