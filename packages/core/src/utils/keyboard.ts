@@ -15,9 +15,20 @@ export function isKeyActive(key: string, event: KeyboardEvent): boolean {
 export function createKeydownHandler(
   toggleCombo: string[] | false,
   onToggle: () => void,
+  onDisable?: () => void,
 ): (event: KeyboardEvent) => void {
   return (event: KeyboardEvent) => {
-    if (event.repeat || event.key === undefined || !toggleCombo)
+    if (event.repeat || event.key === undefined)
+      return
+
+    // Handle Esc key to disable inspector
+    if (event.key === 'Escape' && onDisable) {
+      onDisable()
+      return
+    }
+
+    // Handle toggle combo
+    if (!toggleCombo)
       return
 
     const isCombo = toggleCombo.every(key => isKeyActive(key, event))
@@ -27,5 +38,8 @@ export function createKeydownHandler(
 }
 
 export function parseToggleCombo(toggleComboKey?: string | false): string[] | false {
-  return toggleComboKey?.toLowerCase?.()?.split?.('-') ?? false
+  if (typeof toggleComboKey === 'string')
+    return toggleComboKey.toLowerCase()?.split?.('-') ?? false
+  else
+    return false
 }

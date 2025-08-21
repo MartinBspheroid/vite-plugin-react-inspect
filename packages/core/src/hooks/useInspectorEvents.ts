@@ -21,7 +21,14 @@ export function useInspectorEvents(
 
     if (targetNode && params) {
       const position = getElementRect(targetNode)
-      actions.updateLinkParams({ position, linkParams: params })
+      actions.updateLinkParams({
+        position,
+        linkParams: {
+          ...params,
+          line: Number(params.line),
+          column: Number(params.column),
+        },
+      })
     }
     else {
       actions.closeOverlay()
@@ -47,10 +54,18 @@ export function useInspectorEvents(
     openInEditor(url)
   }, [actions, config.base, openInEditor])
 
-  // Keyboard handler - toggle inspector
+  // Keyboard handler - toggle inspector and handle Esc
   const handleKeydown = useCallback(() => {
-    return createKeydownHandler(config.toggleCombo, actions.toggleEnabled)
-  }, [config.toggleCombo, actions.toggleEnabled])()
+    return createKeydownHandler(
+      config.toggleCombo,
+      actions.toggleEnabled,
+      () => {
+        actions.closeOverlay()
+        actions.disable()
+      },
+      // Pass disable function for Esc key
+    )
+  }, [config.toggleCombo, actions.toggleEnabled, actions.disable])()
 
   // Window resize handler - close overlay
   const handleResize = useCallback(() => {
