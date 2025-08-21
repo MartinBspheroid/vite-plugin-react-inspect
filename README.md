@@ -1,11 +1,9 @@
-<p align="center">
-<a href="https://github.com/webfansplz/vite-plugin-react-inspector"><img src="./logo.svg" width="180" alt="vite-plugin-react-inspect"></a>
-</p>
+## vite-plugin-react-inspector
 
 <p align="center">
   <a href="https://www.npmjs.com/package/vite-plugin-react-inspect" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/v/vite-plugin-react-inspect" alt="NPM Version" /></a>
   <a href="https://www.npmjs.com/package/vite-plugin-react-inspect" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/dt/vite-plugin-react-inspect" alt="NPM Downloads" /></a>
-  <a href="https://github.com/webfansplz/vite-plugin-react-inspector/blob/master/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/webfansplz/vite-plugin-react-inspector" alt="License" /></a>
+  <a href="https://github.com/MartinBspheroid/vite-plugin-react-inspect/blob/master/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/webfansplz/vite-plugin-react-inspector" alt="License" /></a>
 </p>
 
 <p align="center">
@@ -15,10 +13,6 @@
 ## Introduction
 
 A vite plugin which provides the ability that to jump to the local IDE when you click the element of browser automatically. It supports React.
-
-<p align="center">
-<img src="./public/preview.gif" alt="vite-plugin-react-inspect">
-</p>
 
 ## Installation
 
@@ -129,7 +123,7 @@ interface VitePluginInspectorOptions {
 
 ### Example
 
-- [React](https://github.com/webfansplz/vite-plugin-react-inspector/tree/main/packages/playground/react)
+- [React](https://github.com/MartinBspheroid/vite-plugin-react-inspect/tree/main/packages/playground/react)
 
 ## Supported editors
 
