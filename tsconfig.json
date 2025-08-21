@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "jsx": "preserve",
     "target": "esnext",
+    "jsx": "preserve",
     "module": "esnext",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "esModuleInterop": true
   }
 }

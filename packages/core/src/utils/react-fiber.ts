@@ -4,6 +4,9 @@ const KEY_PROPS_DATA = '__react_inspector'
 
 export { KEY_DATA, KEY_IGNORE, KEY_PROPS_DATA }
 
+// Re-export from positioning utils
+export { getElementRect } from './positioning'
+
 export function getComponentData(el: Element): string | null {
   // For React, try to get data from fiber node
   const fiberNode = (el as any)?._reactInternalFiber ?? (el as any)?.__reactInternalInstance
