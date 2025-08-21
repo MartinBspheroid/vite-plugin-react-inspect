@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import './App.css'
+import Counter from './Counter'
 import Hi from './Hi'
 import Welcome from './Welcome'
-import Counter from './Counter'
+import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
