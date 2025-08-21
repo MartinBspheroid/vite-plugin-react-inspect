@@ -49,6 +49,10 @@ jobs:
       - name: Copy LICENSE to core package
         run: cp LICENSE packages/core/LICENSE
 
+      # Rename package for npm publishing
+      - name: Update package name for publishing
+        run: cd packages/core && npm pkg set name="vite-plugin-react-inspect"
+
       - name: Publish Package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
