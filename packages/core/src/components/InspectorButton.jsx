@@ -58,11 +58,11 @@ export function InspectorButton({
           boxShadow:
             '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
         }}
-        href="https://github.com/webfansplz/vite-plugin-vue-inspector"
+        href="https://github.com/MartinBspheroid/vite-plugin-react-inspect"
         target="_blank"
         className="react-inspector-banner"
       >
-        <div>vite-plugin-react-inspector</div>
+        <div>vite-plugin-react-inspect</div>
         <div style={{ fontSize: '11px', opacity: 0.7 }}>
           Click on a element › Open IDE › Link to File
         </div>

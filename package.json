@@ -2,13 +2,13 @@
   "private": true,
   "author": "Martin Blasko",
   "license": "MIT",
-  "homepage": "https://github.com/MartinBspheroid/vite-plugin-react-vue-inspector#readme",
+  "homepage": "https://github.com/MartinBspheroid/vite-plugin-react-inspect#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MartinBspheroid/vite-plugin-react-vue-inspector.git"
+    "url": "git+https://github.com/MartinBspheroid/vite-plugin-react-inspect.git"
   },
   "bugs": {
-    "url": "https://github.com/MartinBspheroid/vite-plugin-react-vue-inspector/issues"
+    "url": "https://github.com/MartinBspheroid/vite-plugin-react-inspect/issues"
   },
   "scripts": {
     "play:react": "pnpm run -r --filter=./packages/playground/react dev",
@@ -19,7 +19,7 @@
     "bump": "bumpp"
   },
   "dependencies": {
-    "vite-plugin-react-vue-inspector": "link:"
+    "vite-plugin-react-inspector": "link:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.2.1",
@@ -52,7 +52,7 @@
       }
     },
     "overrides": {
-      "vite-plugin-react-vue-inspector": "link:"
+      "vite-plugin-react-inspector": "link:"
     }
   }
 }

@@ -4,13 +4,13 @@
   "description": "jump to local IDE source code while click the element of browser automatically. Supports React.",
   "author": "webfansplz",
   "license": "MIT",
-  "homepage": "https://github.com/MartinBspheroid/vite-plugin-react-vue-inspector#readme",
+  "homepage": "https://github.com/MartinBspheroid/vite-plugin-react-inspect#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MartinBspheroid/vite-plugin-react-vue-inspector.git"
+    "url": "git+https://github.com/MartinBspheroid/vite-plugin-react-inspect.git"
   },
   "bugs": {
-    "url": "https://github.com/MartinBspheroid/vite-plugin-react-vue-inspector/issues"
+    "url": "https://github.com/MartinBspheroid/vite-plugin-react-inspect/issues"
   },
   "keywords": [
     "react",

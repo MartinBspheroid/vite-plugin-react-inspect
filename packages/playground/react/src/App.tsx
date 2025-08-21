@@ -14,7 +14,7 @@ function App() {
         <Welcome />
         <Counter count={count} onIncrement={() => setCount(count + 1)} />
         <p>Vite + React so awesome 🔥 .</p>
-        <a href="https://github.com/webfansplz/vite-plugin-vue-inspector">
+        <a href="https://github.com/MartinBspheroid/vite-plugin-react-inspect">
           This project is heavily based on the original Vue inspector work 💗 .
         </a>
       </div>

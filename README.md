@@ -1,11 +1,11 @@
 <p align="center">
-<a href="https://github.com/webfansplz/vite-plugin-react-inspector"><img src="./logo.svg" width="180" alt="vite-plugin-react-inspector"></a>
+<a href="https://github.com/MartinBspheroid/vite-plugin-react-inspect"><img src="./logo.svg" width="180" alt="vite-plugin-react-inspect"></a>
 </p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/vite-plugin-react-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/v/vite-plugin-react-inspector" alt="NPM Version" /></a>
   <a href="https://www.npmjs.com/package/vite-plugin-react-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/dt/vite-plugin-react-inspector" alt="NPM Downloads" /></a>
-  <a href="https://github.com/webfansplz/vite-plugin-react-inspector/blob/master/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/webfansplz/vite-plugin-react-inspector" alt="License" /></a>
+  <a href="https://github.com/MartinBspheroid/vite-plugin-react-inspect/blob/master/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/MartinBspheroid/vite-plugin-react-inspect" alt="License" /></a>
 </p>
 
 <p align="center">
@@ -123,7 +123,7 @@ interface VitePluginInspectorOptions {
 
 ### Example
 
-- [React](https://github.com/webfansplz/vite-plugin-react-inspector/tree/main/packages/playground/react)
+- [React](https://github.com/MartinBspheroid/vite-plugin-react-inspect/tree/main/packages/playground/react)
 
 ## Supported editors
 
