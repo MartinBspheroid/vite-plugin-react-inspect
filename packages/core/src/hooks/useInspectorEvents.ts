@@ -1,9 +1,9 @@
-import { useCallback, useEffect } from 'react'
-import { getElementRect, getTargetNode } from '../utils/react-fiber'
-import { createKeydownHandler } from '../utils/keyboard'
-import { createOpenInEditorHandler, createOpenInEditorUrl } from '../utils/editor'
-import type { InspectorActions, InspectorState } from './useInspectorState'
 import type { InspectorConfig } from './useInspectorConfig'
+import type { InspectorActions, InspectorState } from './useInspectorState'
+import { useCallback, useEffect } from 'react'
+import { createOpenInEditorHandler, createOpenInEditorUrl } from '../utils/editor'
+import { createKeydownHandler } from '../utils/keyboard'
+import { getElementRect, getTargetNode } from '../utils/react-fiber'
 
 export function useInspectorEvents(
   state: InspectorState,

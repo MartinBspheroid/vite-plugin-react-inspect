@@ -35,7 +35,7 @@ export interface TargetNodeResult {
 }
 
 export function getTargetNode(event: Event): TargetNodeResult {
-  const splitRE = /(.+):([\d]+):([\d]+)$/
+  const splitRE = /(.+):(\d+):(\d+)$/
   const path = (event as any).path ?? (event as any).composedPath()
 
   if (!path) {

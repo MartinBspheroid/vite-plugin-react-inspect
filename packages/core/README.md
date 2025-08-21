@@ -1,4 +1,3 @@
-
 <p align="center">
 <a href="https://github.com/webfansplz/vite-plugin-vue-inspector"><img src="./logo.svg" width="180" alt="vite-plugin-vue-inspector"></a>
 </p>
@@ -25,7 +24,7 @@ A vite plugin which provides the ability that to jump to the local IDE when you 
 
 ```bash
 
-# vite-plugin-vue-inspector 
+# vite-plugin-vue-inspector
 
 pnpm install vite-plugin-vue-inspector -D
 
@@ -42,10 +41,10 @@ pnpm install unplugin-vue-inspector -D
 ```ts
 // for Vue2
 
-import { defineConfig, } from 'vite'
-import { createVuePlugin, } from 'vite-plugin-vue2'
-
 import Inspector from 'unplugin-vue-inspector/vite' // OR vite-plugin-vue-inspector
+import { defineConfig, } from 'vite'
+
+import { createVuePlugin, } from 'vite-plugin-vue2'
 
 export default defineConfig({
   plugins: [
@@ -60,10 +59,10 @@ export default defineConfig({
 ```ts
 // for Vue3
 
-import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
-
 import Inspector from 'unplugin-vue-inspector/vite' // OR vite-plugin-vue-inspector
+
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [Vue(), Inspector()],
@@ -87,7 +86,6 @@ export default defineNuxtConfig({
 ```
 
 ### Options
-
 
 ```ts
 interface VitePluginInspectorOptions {
@@ -210,20 +208,18 @@ It uses an **environment variable** named **`LAUNCH_EDITOR`** to specify an IDE 
 
 For example, if you want it always open VS Code when inspection clicked, set `export LAUNCH_EDITOR=code` in your shell.
 
-
 ### VS Code
 
 - install VS Code command line tools, [see the official docs](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line)
   ![install-vscode-cli](./public/install-vscode-cli.png)
 
-- set env to shell, like `.bashrc` or `.zshrc`  
+- set env to shell, like `.bashrc` or `.zshrc`
 
   ```bash
   export LAUNCH_EDITOR=code
   ```
 
 <br />
-
 
 ### VS Code with WSL (Windows)
 
@@ -241,10 +237,9 @@ For example, if you want it always open VS Code when inspection clicked, set `ex
 }
 ```
 
+### WebStorm
 
-### WebStorm  
-
-- just set env with an absolute path to shell, like `.bashrc` or `.zshrc` (only MacOS)  
+- just set env with an absolute path to shell, like `.bashrc` or `.zshrc` (only MacOS)
 
   ```bash
   export LAUNCH_EDITOR='/Applications/WebStorm.app/Contents/MacOS/webstorm'
@@ -254,7 +249,7 @@ For example, if you want it always open VS Code when inspection clicked, set `ex
 
 - install WebStorm command line tools
 
-- then set env to shell, like `.bashrc` or `.zshrc`  
+- then set env to shell, like `.bashrc` or `.zshrc`
 
   ```bash
   export LAUNCH_EDITOR=webstorm

@@ -23,7 +23,7 @@ A vite plugin which provides the ability that to jump to the local IDE when you 
 ## 📦 Installation
 
 ```bash
-# vite-plugin-react-inspector 
+# vite-plugin-react-inspector
 pnpm install vite-plugin-react-inspector -D
 
 # unplugin-react-inspector
@@ -35,15 +35,15 @@ pnpm install unplugin-react-inspector -D
 ### Configuration Vite
 
 ```ts
+import React from '@vitejs/plugin-react'
 // for React
 import { defineConfig } from 'vite'
-import React from '@vitejs/plugin-react'
 
 import Inspector from 'vite-plugin-react-inspector' // OR unplugin-react-inspector/vite
 
 export default defineConfig({
   plugins: [
-    React(), 
+    React(),
     Inspector({
       enabled: true
     })
@@ -162,7 +162,7 @@ For example, if you want it always open VS Code when inspection clicked, set `ex
 - install VS Code command line tools, [see the official docs](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line)
   ![install-vscode-cli](./public/install-vscode-cli.png)
 
-- set env to shell, like `.bashrc` or `.zshrc`  
+- set env to shell, like `.bashrc` or `.zshrc`
 
   ```bash
   export LAUNCH_EDITOR=code
@@ -186,9 +186,9 @@ For example, if you want it always open VS Code when inspection clicked, set `ex
 }
 ```
 
-### WebStorm  
+### WebStorm
 
-- just set env with an absolute path to shell, like `.bashrc` or `.zshrc` (only MacOS)  
+- just set env with an absolute path to shell, like `.bashrc` or `.zshrc` (only MacOS)
 
   ```bash
   export LAUNCH_EDITOR='/Applications/WebStorm.app/Contents/MacOS/webstorm'
@@ -198,7 +198,7 @@ For example, if you want it always open VS Code when inspection clicked, set `ex
 
 - install WebStorm command line tools
 
-- then set env to shell, like `.bashrc` or `.zshrc`  
+- then set env to shell, like `.bashrc` or `.zshrc`
 
   ```bash
   export LAUNCH_EDITOR=webstorm

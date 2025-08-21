@@ -1,8 +1,7 @@
-import { useCallback, useState } from 'react'
-import inspectorOptions from 'virtual:react-inspector-options'
-import { createEmptyLinkParams } from '../utils/editor'
-import type { Position } from '../utils/positioning'
 import type { LinkParams } from '../utils/editor'
+import type { Position } from '../utils/positioning'
+import { useCallback, useState } from 'react'
+import { createEmptyLinkParams } from '../utils/editor'
 
 // @ts-expect-error - Virtual module
 
@@ -22,7 +21,7 @@ export interface InspectorActions {
   enable: () => void
   disable: () => void
   closeOverlay: () => void
-  updateLinkParams: (params: { position: Position; linkParams: LinkParams } | null) => void
+  updateLinkParams: (params: { position: Position, linkParams: LinkParams } | null) => void
 }
 
 export function useInspectorState(): [InspectorState, InspectorActions] {
@@ -73,7 +72,7 @@ export function useInspectorState(): [InspectorState, InspectorActions] {
     }))
   }, [])
 
-  const updateLinkParams = useCallback((update: { position: Position; linkParams: LinkParams } | null) => {
+  const updateLinkParams = useCallback((update: { position: Position, linkParams: LinkParams } | null) => {
     if (update) {
       setState(prev => ({
         ...prev,

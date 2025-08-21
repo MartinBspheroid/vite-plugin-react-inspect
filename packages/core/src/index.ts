@@ -1,10 +1,10 @@
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import fs from 'node:fs'
-import process from 'node:process'
-import { bold, dim, green, yellow } from 'kolorist'
-import { normalizePath } from 'vite'
 import type { PluginOption, ResolvedConfig } from 'vite'
+import fs from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
+import { fileURLToPath } from 'node:url'
+import { dim } from 'kolorist'
+import { normalizePath } from 'vite'
 import { compileSFCTemplate } from './compiler'
 import { idToFile, parseRequest } from './utils'
 
@@ -157,7 +157,9 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
       },
 
       async load(id) {
-        if (id === 'virtual:react-inspector-options') { return `export default ${JSON.stringify({ ...normalizedOptions, base: config.base })}` }
+        if (id === 'virtual:react-inspector-options') {
+          return `export default ${JSON.stringify({ ...normalizedOptions, base: config.base })}`
+        }
         else if (id.startsWith(inspectorPath)) {
           const { query } = parseRequest(id)
           if (query.type)
@@ -172,7 +174,7 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
           if (fs.existsSync(file))
             return await fs.promises.readFile(file, 'utf-8')
           else
-            console.error(`failed to find file for inspector: ${file}, referenced by id ${id}.`)
+            throw new Error(`Inspector: File not found: ${file}`)
         }
       },
       transform(code, id) {
@@ -190,17 +192,18 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
 
         const virtualPath = 'virtual:react-inspector-path:load.js'
         if ((typeof appendTo === 'string' && filename.endsWith(appendTo))
-          || (appendTo instanceof RegExp && appendTo.test(filename)))
+          || (appendTo instanceof RegExp && appendTo.test(filename))) {
           return { code: `${code}\nimport '${virtualPath}'` }
+        }
       },
       configureServer(server) {
         const _printUrls = server.printUrls
         const { toggleComboKey } = normalizedOptions
 
         toggleComboKey && (server.printUrls = () => {
-          const keys = normalizeComboKeyPrint(toggleComboKey)
+          // const keys = normalizeComboKeyPrint(toggleComboKey)
           _printUrls()
-          console.log(`  ${green('➜')}  ${bold('React Inspector')}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
+          // console.log(`  ${green('➜')}  ${bold('React Inspector')}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
         })
       },
       transformIndexHtml(html) {

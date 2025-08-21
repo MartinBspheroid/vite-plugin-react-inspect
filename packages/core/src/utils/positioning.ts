@@ -21,11 +21,11 @@ export function calculateFloatPosition(
   position: Position,
   floatsElement: HTMLElement | null,
 ): FloatStyle {
-  let margin = 10
+  const margin = 10
   let x = position.x + position.width / 2
   let y = position.y + position.height + 5
-  let floatsWidth = floatsElement?.clientWidth ?? 0
-  let floatsHeight = floatsElement?.clientHeight ?? 0
+  const floatsWidth = floatsElement?.clientWidth ?? 0
+  const floatsHeight = floatsElement?.clientHeight ?? 0
 
   x = Math.max(margin, x)
   x = Math.min(x, window.innerWidth - floatsWidth - margin)

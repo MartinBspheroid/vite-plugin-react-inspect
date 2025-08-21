@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react'
 import type { InspectorActions, InspectorState } from './useInspectorState'
+import { useCallback, useEffect } from 'react'
 
 export interface ReactInspectorClient {
   enabled: boolean

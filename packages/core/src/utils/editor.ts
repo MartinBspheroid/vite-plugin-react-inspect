@@ -14,8 +14,8 @@ export function createOpenInEditorHandler(
     const _url = baseUrl instanceof URL
       ? baseUrl
       : `${baseUrl}/__open-in-editor?file=${encodeURIComponent(
-          `${file}:${line}:${column}`,
-        )}`
+        `${file}:${line}:${column}`,
+      )}`
 
     const promise = fetch(_url, {
       mode: 'no-cors',

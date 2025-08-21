@@ -1,3 +1,5 @@
+import process from 'node:process'
+
 export interface ParseQuery {
   vue?: boolean
   src?: boolean
@@ -36,7 +38,7 @@ export function parseRequest(id: string) {
   if (query.raw != null)
     query.raw = true
 
-  if (query.hasOwnProperty('lang.tsx') || query.hasOwnProperty('lang.jsx'))
+  if ('lang.tsx' in query || 'lang.jsx' in query)
     query.isJsx = true
 
   return {

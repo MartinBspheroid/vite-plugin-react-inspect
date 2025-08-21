@@ -1,0 +1,14 @@
+name: Prepare for Publish
+
+on:
+  workflow_call:
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy README to core package
+        run: cp README.md packages/core/README.md
+
+      - name: Copy LICENSE to core package
+        run: cp LICENSE packages/core/LICENSE

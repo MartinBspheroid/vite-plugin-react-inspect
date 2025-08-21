@@ -1,13 +1,8 @@
-import React from 'react'
-
-import { KEY_IGNORE } from './utils/react-fiber'
-import { useInspectorState } from './hooks/useInspectorState'
+import { useInspectorAPI } from './hooks/useInspectorAPI'
 import { useInspectorConfig } from './hooks/useInspectorConfig'
 import { useInspectorEvents } from './hooks/useInspectorEvents'
-import { useInspectorAPI } from './hooks/useInspectorAPI'
-import { InspectorButton } from './components/InspectorButton'
-import { InspectorOverlay } from './components/InspectorOverlay'
-import { InspectorHighlight } from './components/InspectorHighlight'
+import { useInspectorState } from './hooks/useInspectorState'
+import { KEY_IGNORE } from './utils/react-fiber'
 
 function ReactInspectorOverlay() {
   // Consolidated state management
@@ -53,7 +48,8 @@ function ReactInspectorOverlay() {
       )}
 
       {/* Global Styles */}
-      <style>{`
+      <style>
+        {`
         .react-inspector-container:hover .react-inspector-banner {
           display: block !important;
         }
@@ -68,7 +64,8 @@ function ReactInspectorOverlay() {
             transition: none !important;
           }
         }
-      `}</style>
+      `}
+      </style>
     </div>
   )
 }

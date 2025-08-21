@@ -1,10 +1,11 @@
 import path from 'node:path'
-import MagicString from 'magic-string'
+import process from 'node:process'
 import { parse as babelParse, traverse as babelTraverse } from '@babel/core'
-import typescriptPlugin from '@babel/plugin-transform-typescript'
-import importMeta from '@babel/plugin-syntax-import-meta'
 import decoratorsPlugin from '@babel/plugin-proposal-decorators'
 import importAttributesPlugin from '@babel/plugin-syntax-import-attributes'
+import importMeta from '@babel/plugin-syntax-import-meta'
+import typescriptPlugin from '@babel/plugin-transform-typescript'
+import MagicString from 'magic-string'
 import { normalizePath } from 'vite'
 
 const EXCLUDE_TAG = ['script', 'style']
@@ -20,7 +21,6 @@ export async function compileSFCTemplate(
   { code, id }: CompileSFCTemplateOptions,
 ) {
   const s = new MagicString(code)
-  // eslint-disable-next-line n/prefer-global/process
   const relativePath = normalizePath(path.relative(process.cwd(), id))
   const keyData = KEY_DATA_REACT
 
@@ -63,7 +63,8 @@ export async function compileSFCTemplate(
 
           s.prependLeft(
             insertPosition,
-            content)
+            content,
+          )
         }
       },
     })

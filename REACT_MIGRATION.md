@@ -42,7 +42,7 @@ This project has been successfully converted from a dual Vue/React inspector plu
 packages/
 ├── core/                    # vite-plugin-react-inspector
 │   ├── src/
-│   │   ├── Overlay.jsx     # React overlay component  
+│   │   ├── Overlay.jsx     # React overlay component
 │   │   ├── load-react.js   # React loader
 │   │   ├── compiler/       # JSX compilation
 │   │   └── index.ts        # Main plugin (React-only)
@@ -56,16 +56,16 @@ packages/
 ### Usage
 
 ```typescript
+import react from '@vitejs/plugin-react'
 // vite.config.ts
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import Inspector from 'vite-plugin-react-inspector'
 
 export default defineConfig({
   plugins: [
     react(),
     Inspector({
-      enabled: true  // React-only, no framework option needed
+      enabled: true // React-only, no framework option needed
     })
   ]
 })
@@ -73,20 +73,20 @@ export default defineConfig({
 
 ### Key Changes Made
 
-1. **Package Names**: 
+1. **Package Names**:
    - `vite-plugin-vue-inspector` → `vite-plugin-react-inspector`
    - `unplugin-vue-inspector` → `unplugin-react-inspector`
 
-2. **Global Variables**: 
+2. **Global Variables**:
    - `window.__VUE_INSPECTOR__` → `window.__REACT_INSPECTOR__`
 
-3. **Data Attributes**: 
+3. **Data Attributes**:
    - `data-v-inspector` → `data-react-inspector`
 
-4. **Virtual Modules**: 
+4. **Virtual Modules**:
    - `virtual:vue-inspector-*` → `virtual:react-inspector-*`
 
-5. **Interface Names**: 
+5. **Interface Names**:
    - `VueInspectorClient` → `ReactInspectorClient`
 
 ## Benefits of React-Only Approach

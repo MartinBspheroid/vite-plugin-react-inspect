@@ -32,9 +32,11 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
+    "LICENSE",
+    "README.md",
     "dist",
-    "src/load-react.js",
-    "src/Overlay.jsx"
+    "src/Overlay.jsx",
+    "src/load-react.js"
   ],
   "scripts": {
     "lint": "eslint --fix --ext .js,.ts,.vue .",

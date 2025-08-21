@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { calculateFloatPosition } from '../utils/positioning'
 
 export function InspectorOverlay({
@@ -44,7 +44,11 @@ export function InspectorOverlay({
       }}
     >
       <div>
-        {linkParams.title}:{linkParams.line}:{linkParams.column}
+        {linkParams.title}
+        :
+        {linkParams.line}
+        :
+        {linkParams.column}
       </div>
     </div>
   )

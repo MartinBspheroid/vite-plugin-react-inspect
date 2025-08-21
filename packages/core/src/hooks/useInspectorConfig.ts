@@ -1,14 +1,15 @@
+import type { Position } from '../utils/positioning'
 import { useMemo } from 'react'
 import inspectorOptions from 'virtual:react-inspector-options'
+import { shouldShowContainer } from '../utils/editor'
 import { parseToggleCombo } from '../utils/keyboard'
 import {
-  type Position,
   calculateBannerPosition,
   calculateFloatPosition,
   calculateSizeIndicatorStyle,
   parseToggleButtonPosition,
+
 } from '../utils/positioning'
-import { shouldShowContainer } from '../utils/editor'
 
 // @ts-expect-error - Virtual module
 
