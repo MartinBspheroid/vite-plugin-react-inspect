@@ -157,8 +157,7 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
       },
 
       async load(id) {
-        if (id === 'virtual:react-inspector-options')
-          return `export default ${JSON.stringify({ ...normalizedOptions, base: config.base })}`
+        if (id === 'virtual:react-inspector-options') { return `export default ${JSON.stringify({ ...normalizedOptions, base: config.base })}` }
         else if (id.startsWith(inspectorPath)) {
           const { query } = parseRequest(id)
           if (query.type)

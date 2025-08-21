@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Welcome = () => {
+function Welcome() {
   return (
     <div className="welcome-component">
       <h2>Welcome to React Inspector!</h2>

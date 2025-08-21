@@ -1,9 +1,8 @@
-/* eslint-disable new-cap */
-
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import App from 'virtual:react-inspector-path:Overlay.jsx'
-// @ts-ignore
+
+// @ts-expect-error
 import inspectorOptions from 'virtual:react-inspector-options'
 
 const CONTAINER_ID = 'react-inspector-container'
@@ -22,10 +21,10 @@ function load() {
   const isClient = typeof window !== 'undefined'
   if (!isClient)
     return
-  
+
   const container = createInspectorContainer()
   const root = ReactDOM.createRoot(container)
-  
+
   root.render(React.createElement(App))
 }
 

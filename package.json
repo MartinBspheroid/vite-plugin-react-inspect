@@ -2,13 +2,13 @@
   "private": true,
   "author": "webfansplz",
   "license": "MIT",
-  "homepage": "https://github.com/webfansplz/vite-plugin-vue-inspector#readme",
+  "homepage": "https://github.com/MartinBspheroid/vite-plugin-react-vue-inspector#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webfansplz/vite-plugin-vue-inspector.git"
+    "url": "git+https://github.com/MartinBspheroid/vite-plugin-react-vue-inspector.git"
   },
   "bugs": {
-    "url": "https://github.com/webfansplz/vite-plugin-vue-inspector/issues"
+    "url": "https://github.com/MartinBspheroid/vite-plugin-react-vue-inspector/issues"
   },
   "scripts": {
     "play:react": "pnpm run -r --filter=./packages/playground/react dev",

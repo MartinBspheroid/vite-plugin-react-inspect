@@ -22,7 +22,7 @@ export async function compileSFCTemplate(
   const s = new MagicString(code)
   const relativePath = normalizePath(path.relative(process.cwd(), id))
   const keyData = KEY_DATA_REACT
-  
+
   const result = await new Promise((resolve) => {
     const plugins = [
       importMeta,
@@ -39,7 +39,7 @@ export async function compileSFCTemplate(
         { deprecatedAssertSyntax: true },
       ],
     ]
-    
+
     // React JSX is handled by TypeScript plugin for TSX files
 
     const ast = babelParse(code, {
