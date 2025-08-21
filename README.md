@@ -261,7 +261,9 @@ if (inspector) {
 
 ## 🌸 Credits
 
-This project is inspired by [react-dev-inspector](https://github.com/zthxxx/react-dev-inspector) .
+This project is heavily based on [vite-plugin-vue-inspector](https://github.com/webfansplz/vite-plugin-vue-inspector) by webfansplz, adapted for React.
+
+This project is also inspired by [react-dev-inspector](https://github.com/zthxxx/react-dev-inspector) .
 
 Partially implementation is inspired by [vite-plugin-svelte-inspector](https://github.com/sveltejs/vite-plugin-svelte/tree/main/packages/vite-plugin-svelte-inspector) .
 
