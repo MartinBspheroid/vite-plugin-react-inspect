@@ -1,6 +1,9 @@
 import { useInspectorAPI } from './hooks/useInspectorAPI'
 import { useInspectorEvents } from './hooks/useInspectorEvents'
 import { useInspectorState } from './hooks/useInspectorState'
+import { InspectorButton } from './components/InspectorButton'
+import { InspectorHighlight } from './components/InspectorHighlight'
+import { InspectorOverlay } from './components/InspectorOverlay'
 import { KEY_IGNORE } from './utils/react-fiber'
 
 // Default configuration for standalone bundle
@@ -17,6 +20,14 @@ const DEFAULT_CONFIG = {
   lazyLoad: false,
   launchEditor: 'code',
   containerVisible: enabled => enabled,
+  containerPosition: {
+    top: '10px',
+    right: '10px'
+  },
+  bannerPosition: {
+    top: '50px',
+    right: '-130px'
+  },
   sizeIndicatorStyle: position => ({
     position: 'fixed',
     left: position.x - 50,
@@ -55,33 +66,37 @@ function ReactInspectorOverlay() {
       {containerVisible && (
         <InspectorButton
           enabled={state.enabled}
-          position={config.toggleButtonPos}
-          onToggle={actions.toggleEnabled}
-          visible={config.toggleButtonVisibility}
+          containerPosition={config.containerPosition}
+          bannerPosition={config.bannerPosition}
         />
       )}
 
-      {/* Size Indicator */}
-      {state.enabled && (
-        <div style={sizeIndicatorStyle}>
-          {state.position.x} ×{state.position.y}
-        </div>
+      {/* Overlay and Highlight */}
+      {state.overlayVisible && state.linkParams && (
+        <>
+          <InspectorOverlay
+            linkParams={state.linkParams}
+            position={state.position}
+            animation={config.animation}
+          />
+          <InspectorHighlight
+            sizeIndicatorStyle={sizeIndicatorStyle}
+            animation={config.animation}
+          />
+        </>
       )}
 
-      {/* Inspector Overlay */}
-      {state.enabled && (
-        <InspectorOverlay
-          position={state.position}
-          onMove={actions.updatePosition}
-          onOpenEditor={openInEditor}
-          onToggle={actions.toggleEnabled}
-        />
-      )}
-
-      {/* Element Highlight */}
-      {state.enabled && state.position.x > 0 && state.position.y > 0 && (
-        <InspectorHighlight position={state.position} />
-      )}
+      {/* Global Styles */}
+      <style>
+        {`
+        .react-inspector-container:hover .react-inspector-banner {
+          display: block !important;
+        }
+        .react-inspector-container--disabled:hover .react-inspector-banner {
+          display: none !important;
+        }
+        `}
+      </style>
     </div>
   )
 }

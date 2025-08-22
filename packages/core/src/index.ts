@@ -193,6 +193,14 @@ function VitePluginInspector(
           // Handle React-specific file routing - use load-react.js
           if (file.endsWith('/load.js')) file = file.replace('/load.js', '/load-react.js')
 
+          // Serve bundled overlay instead of source overlay
+          if (file.endsWith('/Overlay.jsx')) {
+            const bundledOverlayPath = path.join(path.dirname(file), '../dist/overlay.bundle.js')
+            if (fs.existsSync(bundledOverlayPath)) {
+              return await fs.promises.readFile(bundledOverlayPath, 'utf-8')
+            }
+          }
+
           if (fs.existsSync(file)) return await fs.promises.readFile(file, 'utf-8')
           throw new Error(`Inspector: File not found: ${file}`)
         }

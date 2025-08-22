@@ -35,7 +35,6 @@
     "LICENSE",
     "README.md",
     "dist",
-    "src/Overlay.jsx",
     "src/load-react.js"
   ],
   "scripts": {
