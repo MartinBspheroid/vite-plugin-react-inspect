@@ -1,7 +1,32 @@
 #!/usr/bin/env node
 
+import { spawn } from 'node:child_process'
 import { argv, exit } from 'node:process'
 import { build } from 'bun'
+
+function runCommand(command, args = []) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { stdio: 'pipe' })
+    let stdout = ''
+    let stderr = ''
+
+    child.stdout.on('data', data => {
+      stdout += data.toString()
+    })
+
+    child.stderr.on('data', data => {
+      stderr += data.toString()
+    })
+
+    child.on('close', code => {
+      if (code === 0) {
+        resolve({ stdout, stderr })
+      } else {
+        reject(new Error(`${command} failed with exit code ${code}\n${stderr}`))
+      }
+    })
+  })
+}
 
 const isDev = argv.includes('--watch') || argv.includes('--dev')
 
@@ -39,6 +64,16 @@ Promise.all([
 ])
   .then(async () => {
     console.warn('✅ Main build completed successfully')
+
+    // Generate TypeScript declarations
+    console.warn('Generating TypeScript declarations...')
+    try {
+      await runCommand('bunx', ['tsc', '--project', '.'])
+      console.warn('✅ TypeScript declarations generated successfully')
+    } catch (error) {
+      console.error('❌ TypeScript declaration generation failed:', error.message)
+      throw error
+    }
 
     // Build overlay bundle
     console.warn('Building overlay bundle...')
