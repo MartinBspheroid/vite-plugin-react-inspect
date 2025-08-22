@@ -11,7 +11,7 @@ const packageDir = path.join(__dirname, 'packages/core')
 const distDir = path.join(packageDir, 'dist')
 
 // Check if all required files exist
-const requiredFiles = ['index.mjs', 'index.cjs', 'index.d.ts', 'overlay.bundle.js']
+const requiredFiles = ['index.mjs', 'index.d.ts', 'overlay.bundle.js']
 for (const file of requiredFiles) {
   const filePath = path.join(distDir, file)
   const exists = fs.existsSync(filePath)

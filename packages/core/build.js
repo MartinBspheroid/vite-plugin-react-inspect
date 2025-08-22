@@ -49,18 +49,6 @@ Promise.all([
     sourcemap: isDev ? 'inline' : false,
     watch: isDev,
   }),
-  // Build CJS
-  build({
-    entrypoints: ['src/index.ts'],
-    outdir: 'dist',
-    target: 'node',
-    format: 'cjs',
-    minify: !isDev,
-    external: ['vite', 'react', 'react-dom'],
-    naming: '[dir]/[name].cjs',
-    sourcemap: isDev ? 'inline' : false,
-    watch: isDev,
-  }),
 ])
   .then(async () => {
     console.warn('✅ Main build completed successfully')
