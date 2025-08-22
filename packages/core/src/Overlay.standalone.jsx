@@ -5,42 +5,30 @@ import { InspectorButton } from './components/InspectorButton'
 import { InspectorHighlight } from './components/InspectorHighlight'
 import { InspectorOverlay } from './components/InspectorOverlay'
 import { KEY_IGNORE } from './utils/react-fiber'
+import { calculateFloatPosition, calculateSizeIndicatorStyle } from './utils/positioning'
 
-// Default configuration for standalone bundle
+// Default configuration for standalone bundle that matches useInspectorConfig structure
 const DEFAULT_CONFIG = {
   base: '/',
   toggleCombo: ['meta', 'shift'],
   disableInspectorOnEditorOpen: false,
   animation: true,
-  reduceMotion: false,
-  enabled: false,
-  toggleButtonVisibility: 'active',
-  toggleButtonPos: 'top-right',
-  appendTo: '',
-  lazyLoad: false,
-  launchEditor: 'code',
-  containerVisible: enabled => enabled,
+  
+  containerVisible: (enabled) => enabled,
+  
   containerPosition: {
     top: '10px',
     right: '10px'
   },
+  
   bannerPosition: {
     top: '50px',
     right: '-130px'
   },
-  sizeIndicatorStyle: position => ({
-    position: 'fixed',
-    left: position.x - 50,
-    top: position.y - 10,
-    background: 'rgba(0, 0, 0, 0.8)',
-    color: 'white',
-    padding: '2px 6px',
-    borderRadius: '3px',
-    fontSize: '12px',
-    fontFamily: 'monospace',
-    zIndex: 999999,
-    pointerEvents: 'none',
-  }),
+  
+  floatsStyle: (position, floatsElement) => calculateFloatPosition(position, floatsElement),
+  
+  sizeIndicatorStyle: (position) => calculateSizeIndicatorStyle(position),
 }
 
 function ReactInspectorOverlay() {
@@ -94,6 +82,14 @@ function ReactInspectorOverlay() {
         }
         .react-inspector-container--disabled:hover .react-inspector-banner {
           display: none !important;
+        }
+        .react-inspector-animated {
+          transition: all 0.1s ease-in;
+        }
+        @media (prefers-reduced-motion) {
+          .react-inspector-animated {
+            transition: none !important;
+          }
         }
         `}
       </style>
