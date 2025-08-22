@@ -49,12 +49,16 @@ jobs:
       - name: Build
         run: bun run build
 
-      # Copy README and LICENSE to packages for npm
-      - name: Copy README to core package
-        run: cp README.md packages/core/README.md
-
-      - name: Copy LICENSE to core package
-        run: cp LICENSE packages/core/LICENSE
+      # Copy README and LICENSE to packages for npm (if monorepo structure)
+      - name: Copy README and LICENSE
+        run: |
+          if [ -d "packages/core" ]; then
+            echo "Copying files to monorepo packages/core/"
+            cp README.md packages/core/README.md
+            cp LICENSE packages/core/LICENSE
+          else
+            echo "Flat structure - README.md and LICENSE already in root"
+          fi
 
       # Get version from tag
       - name: Get version from tag
@@ -66,9 +70,27 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           echo "Publishing version: ${{ steps.get_version.outputs.version }}"
-          # Update package name for publishing
-          cd packages/core && npm pkg set name="vite-plugin-react-inspect"
-          # Set version from tag
-          cd packages/core && npm pkg set version="${{ steps.get_version.outputs.version }}"
+          echo "Current directory structure:"
+          ls -la
+          echo "Looking for packages directory:"
+          find . -name "packages" -type d
+          echo "Looking for any package.json files:"
+          find . -name "package.json"
+          
+          # Check if we're in a monorepo structure or flat structure
+          if [ -d "packages/core" ]; then
+            echo "Monorepo structure detected"
+            cd packages/core
+          elif [ -f "package.json" ] && grep -q "vite-plugin-react-inspector" package.json; then
+            echo "Flat structure detected - working in root"
+          else
+            echo "❌ Cannot find package.json with vite-plugin-react-inspector"
+            exit 1
+          fi
+          
+          # Update package name and version for publishing
+          npm pkg set name="vite-plugin-react-inspect"
+          npm pkg set version="${{ steps.get_version.outputs.version }}"
+          
           # Publish the package
-          cd packages/core && npm publish
+          npm publish
