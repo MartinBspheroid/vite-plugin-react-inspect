@@ -58,7 +58,7 @@ export function InspectorButton({ enabled, containerPosition, bannerPosition }) 
         className="react-inspector-banner"
         rel="noreferrer"
       >
-        <div>vite-plugin-react-inspector</div>
+        <div>vite-plugin-react-inspect</div>
         <div style={{ fontSize: '11px', opacity: 0.7 }}>
           Click on a element › Open IDE › Link to File
         </div>

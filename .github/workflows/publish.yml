@@ -81,10 +81,10 @@ jobs:
           if [ -d "packages/core" ]; then
             echo "Monorepo structure detected"
             cd packages/core
-          elif [ -f "package.json" ] && grep -q "vite-plugin-react-inspector" package.json; then
+          elif [ -f "package.json" ] && grep -q "vite-plugin-react-inspect" package.json; then
             echo "Flat structure detected - working in root"
           else
-            echo "❌ Cannot find package.json with vite-plugin-react-inspector"
+            echo "❌ Cannot find package.json with vite-plugin-react-inspect"
             exit 1
           fi
           

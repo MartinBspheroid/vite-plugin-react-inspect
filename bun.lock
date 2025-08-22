@@ -12,8 +12,8 @@
       },
     },
     "packages/core": {
-      "name": "vite-plugin-react-inspector",
-      "version": "1.1.6",
+      "name": "vite-plugin-react-inspect",
+      "version": "1.1.10",
       "dependencies": {
         "@babel/core": "^7.23.0",
         "@babel/plugin-proposal-decorators": "^7.23.0",
@@ -50,7 +50,7 @@
         "@vitejs/plugin-react": "^4.7.0",
         "typescript": "catalog:",
         "vite": "catalog:",
-        "vite-plugin-react-inspector": "workspace:*",
+        "vite-plugin-react-inspect": "workspace:*",
       },
     },
   },
@@ -543,7 +543,7 @@
 
     "vite": ["vite@7.1.3", "", { "dependencies": { "esbuild": "^0.25.0", "fdir": "^6.5.0", "picomatch": "^4.0.3", "postcss": "^8.5.6", "rollup": "^4.43.0", "tinyglobby": "^0.2.14" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "peerDependencies": { "@types/node": "^20.19.0 || >=22.12.0", "jiti": ">=1.21.0", "less": "^4.0.0", "lightningcss": "^1.21.0", "sass": "^1.70.0", "sass-embedded": "^1.70.0", "stylus": ">=0.54.8", "sugarss": "^5.0.0", "terser": "^5.16.0", "tsx": "^4.8.1", "yaml": "^2.4.2" }, "optionalPeers": ["@types/node", "jiti", "less", "lightningcss", "sass", "sass-embedded", "stylus", "sugarss", "terser", "tsx", "yaml"], "bin": { "vite": "bin/vite.js" } }, "sha512-OOUi5zjkDxYrKhTV3V7iKsoS37VUM7v40+HuwEmcrsf11Cdx9y3DIr2Px6liIcZFwt3XSRpQvFpL3WVy7ApkGw=="],
 
-    "vite-plugin-react-inspector": ["vite-plugin-react-inspector@workspace:packages/core"],
+    "vite-plugin-react-inspect": ["vite-plugin-react-inspect@workspace:packages/core"],
 
     "watchpack": ["watchpack@2.4.4", "", { "dependencies": { "glob-to-regexp": "^0.4.1", "graceful-fs": "^4.1.2" } }, "sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA=="],
 

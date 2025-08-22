@@ -24,9 +24,9 @@ A vite plugin which provides the ability that to jump to the local IDE when you 
 
 ```bash
 
-# vite-plugin-react-inspector (Pure Vite)
+# vite-plugin-react-inspect (Pure Vite)
 
-bun add vite-plugin-react-inspector -D
+bun add vite-plugin-react-inspect -D
 
 # unplugin-react-inspector (Pure Vite wrapper)
 

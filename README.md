@@ -1,8 +1,8 @@
-## vite-plugin-react-inspector
+## vite-plugin-react-inspect
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/vite-plugin-react-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/v/vite-plugin-react-inspector" alt="NPM Version" /></a>
-  <a href="https://www.npmjs.com/package/vite-plugin-react-inspector" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/dt/vite-plugin-react-inspector" alt="NPM Downloads" /></a>
+  <a href="https://www.npmjs.com/package/vite-plugin-react-inspect" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/v/vite-plugin-react-inspect" alt="NPM Version" /></a>
+  <a href="https://www.npmjs.com/package/vite-plugin-react-inspect" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/dt/vite-plugin-react-inspect" alt="NPM Downloads" /></a>
   <a href="https://github.com/MartinBspheroid/vite-plugin-react-inspect/blob/main/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/MartinBspheroid/vite-plugin-react-inspect" alt="License" /></a>
 </p>
 
@@ -36,12 +36,12 @@ This plugin represents a complete rewrite using modern tooling with **zero legac
 
 ```bash
 # Install with Bun (recommended for maximum performance)
-bun add vite-plugin-react-inspector -D
+bun add vite-plugin-react-inspect -D
 
 # Or with other package managers
-npm install vite-plugin-react-inspector -D
-pnpm add vite-plugin-react-inspector -D
-yarn add vite-plugin-react-inspector -D
+npm install vite-plugin-react-inspect -D
+pnpm add vite-plugin-react-inspect -D
+yarn add vite-plugin-react-inspect -D
 ```
 
 **Pro Tip**: Use Bun for 20-30x faster installation and development experience!
@@ -53,7 +53,7 @@ yarn add vite-plugin-react-inspector -D
 ```ts
 import React from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import Inspector from 'vite-plugin-react-inspector'
+import Inspector from 'vite-plugin-react-inspect'
 
 export default defineConfig({
   plugins: [
@@ -298,7 +298,7 @@ export LAUNCH_EDITOR=vim
 You can also use control inspector programmatically, by accessing the `__REACT_INSPECTOR__` global variable.
 
 ```ts
-import type { ReactInspectorClient } from 'vite-plugin-react-inspector'
+import type { ReactInspectorClient } from 'vite-plugin-react-inspect'
 
 const inspector: ReactInspectorClient = window.__REACT_INSPECTOR__
 

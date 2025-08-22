@@ -103,7 +103,7 @@ import type { Plugin } from 'vite'
 
 export function viteReactInspector(options = {}): Plugin {
   return {
-    name: 'vite-plugin-react-inspector',
+    name: 'vite-plugin-react-inspect',
     enforce: 'pre',
     apply: 'serve',
     configResolved(config) { /* ... */ },

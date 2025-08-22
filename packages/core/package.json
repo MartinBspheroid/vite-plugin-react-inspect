@@ -1,5 +1,5 @@
 {
-  "name": "vite-plugin-react-inspector",
+  "name": "vite-plugin-react-inspect",
   "version": "1.1.10",
   "description": "jump to local IDE source code while click the element of browser automatically. Supports React.",
   "author": "webfansplz",

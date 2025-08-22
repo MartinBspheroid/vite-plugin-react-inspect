@@ -216,7 +216,7 @@ function VitePluginInspector(
 
   return [
     {
-      name: 'vite-plugin-react-inspector',
+      name: 'vite-plugin-react-inspect',
       enforce: 'pre',
       apply(_, { command }) {
         // apply only on serve and not for test

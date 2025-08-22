@@ -31,9 +31,9 @@ function runCommand(command, args = []) {
 const isDev = argv.includes('--watch') || argv.includes('--dev')
 
 if (isDev) {
-  console.warn('Building vite-plugin-react-inspector (watch mode)...')
+  console.warn('Building vite-plugin-react-inspect (watch mode)...')
 } else {
-  console.warn('Building vite-plugin-react-inspector...')
+  console.warn('Building vite-plugin-react-inspect...')
 }
 
 Promise.all([
