@@ -18,7 +18,7 @@
     "check": "biome check .",
     "dev": "bun run --filter=./packages/core dev",
     "build": "bun run --filter=./packages/core build",
-    "release": "bun run build && changeset && changeset version && changeset publish",
+    "release": "bun run build && bun run bump",
     "bump": "bumpp",
     "prepare": "lefthook install",
     "hooks:install": "lefthook install",
@@ -42,7 +42,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
-    "@changesets/cli": "^2.29.6",
     "@types/node": "catalog:",
     "bumpp": "^10.2.3",
     "lefthook": "^1.12.3",
