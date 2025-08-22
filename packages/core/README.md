@@ -24,13 +24,13 @@ A vite plugin which provides the ability that to jump to the local IDE when you 
 
 ```bash
 
-# vite-plugin-vue-inspector
+# vite-plugin-react-inspector (Pure Vite)
 
-pnpm install vite-plugin-vue-inspector -D
+bun add vite-plugin-react-inspector -D
 
-# unplugin-vue-inspector
+# unplugin-react-inspector (Pure Vite wrapper)
 
-pnpm install unplugin-vue-inspector -D
+bun add unplugin-react-inspector -D
 
 ```
 

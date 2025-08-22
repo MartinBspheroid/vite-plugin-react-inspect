@@ -19,7 +19,7 @@ export interface SizeIndicatorStyle {
 
 export function calculateFloatPosition(
   position: Position,
-  floatsElement: HTMLElement | null,
+  floatsElement: HTMLElement | null
 ): FloatStyle {
   const margin = 10
   let x = position.x + position.width / 2
@@ -29,8 +29,7 @@ export function calculateFloatPosition(
 
   x = Math.max(margin, x)
   x = Math.min(x, window.innerWidth - floatsWidth - margin)
-  if (x < floatsWidth / 2)
-    x = floatsWidth / 2 + margin
+  if (x < floatsWidth / 2) x = floatsWidth / 2 + margin
 
   y = Math.max(margin, y)
   y = Math.min(y, window.innerHeight - floatsHeight - margin)
@@ -54,8 +53,7 @@ export function parseToggleButtonPosition(toggleButtonPos: string): Record<strin
   const positions = toggleButtonPos.split('-')
   const result: Record<string, string> = {}
 
-  for (const position of positions)
-    result[position] = '15px'
+  for (const position of positions) result[position] = '15px'
 
   return result
 }

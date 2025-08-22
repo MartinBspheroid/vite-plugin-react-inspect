@@ -1,4 +1,5 @@
-import React, { memo } from 'react'
+import type React from 'react'
+import { memo } from 'react'
 
 interface CounterProps {
   count: number
@@ -13,7 +14,7 @@ const Counter: React.FC<CounterProps> = memo(({ count, onIncrement }) => {
         Current count:
         {count}
       </p>
-      <button onClick={onIncrement}>
+      <button type="button" onClick={onIncrement}>
         Increment
       </button>
     </div>

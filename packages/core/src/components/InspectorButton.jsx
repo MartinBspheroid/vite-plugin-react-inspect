@@ -1,10 +1,6 @@
 import { useRef } from 'react'
 
-export function InspectorButton({
-  enabled,
-  containerPosition,
-  bannerPosition,
-}) {
+export function InspectorButton({ enabled, containerPosition, bannerPosition }) {
   const containerRef = useRef(null)
 
   return (
@@ -55,12 +51,12 @@ export function InspectorButton({
           color: '#e9e9e9',
           fontSize: '14px',
           backgroundColor: '#429bb8ff',
-          boxShadow:
-            '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
         }}
         href="https://github.com/webfansplz/vite-plugin-vue-inspector"
         target="_blank"
         className="react-inspector-banner"
+        rel="noreferrer"
       >
         <div>vite-plugin-react-inspector</div>
         <div style={{ fontSize: '11px', opacity: 0.7 }}>

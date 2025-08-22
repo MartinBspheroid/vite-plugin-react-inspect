@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 interface HiProps {
   name?: string
@@ -9,8 +9,7 @@ const Hi: React.FC<HiProps> = ({ name = 'React Inspector' }) => {
     <div className="hi-component">
       <h1>
         Hello
-        {name}
-        !
+        {name}!
       </h1>
       <p>This is a React component that can be inspected.</p>
     </div>

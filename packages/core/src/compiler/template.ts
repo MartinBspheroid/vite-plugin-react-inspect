@@ -17,28 +17,17 @@ interface CompileSFCTemplateOptions {
   type: 'jsx'
   framework: 'react'
 }
-export async function compileSFCTemplate(
-  { code, id }: CompileSFCTemplateOptions,
-) {
+export async function compileSFCTemplate({ code, id }: CompileSFCTemplateOptions) {
   const s = new MagicString(code)
   const relativePath = normalizePath(path.relative(process.cwd(), id))
   const keyData = KEY_DATA_REACT
 
-  const result = await new Promise((resolve) => {
+  const result = await new Promise(resolve => {
     const plugins = [
       importMeta,
-      [
-        typescriptPlugin,
-        { isTSX: true, allowExtensions: true },
-      ],
-      [
-        decoratorsPlugin,
-        { legacy: true },
-      ],
-      [
-        importAttributesPlugin,
-        { deprecatedAssertSyntax: true },
-      ],
+      [typescriptPlugin, { isTSX: true, allowExtensions: true }],
+      [decoratorsPlugin, { legacy: true }],
+      [importAttributesPlugin, { deprecatedAssertSyntax: true }],
     ]
 
     // React JSX is handled by TypeScript plugin for TSX files
@@ -52,8 +41,17 @@ export async function compileSFCTemplate(
 
     babelTraverse(ast, {
       enter({ node }) {
-        if (node.type === 'JSXElement' && !EXCLUDE_TAG.includes(s.slice(node.openingElement.name.start, node.openingElement.name.end))) {
-          if (node.openingElement.attributes.some(attr => attr.type !== 'JSXSpreadAttribute' && attr.name.name === keyData))
+        if (
+          node.type === 'JSXElement' &&
+          !EXCLUDE_TAG.includes(
+            s.slice(node.openingElement.name.start, node.openingElement.name.end)
+          )
+        ) {
+          if (
+            node.openingElement.attributes.some(
+              attr => attr.type !== 'JSXSpreadAttribute' && attr.name.name === keyData
+            )
+          )
             return
 
           const insertPosition = node.openingElement.end - (node.openingElement.selfClosing ? 2 : 1)
@@ -61,10 +59,7 @@ export async function compileSFCTemplate(
 
           const content = ` ${keyData}="${relativePath}:${line}:${column}"`
 
-          s.prependLeft(
-            insertPosition,
-            content,
-          )
+          s.prependLeft(insertPosition, content)
         }
       },
     })

@@ -6,7 +6,7 @@ This project represents a complete migration from legacy tooling (pnpm, tsup, un
 
 ### 🔥 Complete Toolchain Migration
 - **Package Manager**: Bun (pnpm eliminated)
-- **Bundler**: Bun build (tsup eliminated) 
+- **Bundler**: Bun build (tsup eliminated)
 - **Plugin Framework**: Pure Vite native API (unplugin eliminated)
 - **Overlay System**: Modern Bun bundling (string-based hacks eliminated)
 
@@ -30,7 +30,7 @@ bun run dev
 # Building
 bun run build
 
-# Playground testing  
+# Playground testing
 bun run play:react
 ```
 
@@ -54,7 +54,7 @@ await Bun.build({
   minify: true,
   external: ['vite', 'react', 'react-dom'],
   naming: '[dir]/[name].mjs'
-});
+})
 ```
 
 **Key Benefits:**
@@ -71,7 +71,7 @@ await Bun.build({
 const bundledSources = {
   'Overlay.jsx': readFileSync('src/Overlay.jsx', 'utf-8'),
   // More string hacks...
-};
+}
 ```
 
 **NEW APPROACH (Pure Bun):**
@@ -85,7 +85,7 @@ await Bun.build({
   bundle: true,
   external: ['react', 'react-dom'],
   jsx: 'automatic'
-});
+})
 ```
 
 ### Pure Vite Plugin API
@@ -93,13 +93,13 @@ await Bun.build({
 **OLD APPROACH (Eliminated):**
 ```javascript
 // ❌ DELETED: Cross-bundler bloat with unplugin
-import { createUnplugin } from 'unplugin';
+import { createUnplugin } from 'unplugin'
 ```
 
 **NEW APPROACH (Pure Vite):**
 ```typescript
 // ✅ Pure Vite native API
-import type { Plugin } from 'vite';
+import type { Plugin } from 'vite'
 
 export function viteReactInspector(options = {}): Plugin {
   return {
@@ -109,7 +109,7 @@ export function viteReactInspector(options = {}): Plugin {
     configResolved(config) { /* ... */ },
     transform(code, id) { /* ... */ },
     // Pure Vite hooks only
-  };
+  }
 }
 ```
 
