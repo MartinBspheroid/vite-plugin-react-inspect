@@ -141,6 +141,54 @@ export function normalizeComboKeyPrint(toggleComboKey: string) {
     .join(dim('+'))
 }
 
+function createVirtualOptionsModule(
+  normalizedOptions: VitePluginInspectorOptions,
+  config: ResolvedConfig
+) {
+  return `export default ${JSON.stringify({ ...normalizedOptions, base: config.base })}`
+}
+
+function resolveReactFilePath(file: string): string {
+  // Handle React-specific file routing - use load-react.js
+  if (file.endsWith('/load.js')) {
+    return file.replace('/load.js', '/load-react.js')
+  }
+  return file
+}
+
+async function loadOverlayFile(file: string): Promise<string | null> {
+  // Serve bundled overlay instead of source overlay
+  if (file.endsWith('/Overlay.jsx')) {
+    const bundledOverlayPath = path.join(path.dirname(file), '../dist/overlay.bundle.js')
+    if (fs.existsSync(bundledOverlayPath)) {
+      return await fs.promises.readFile(bundledOverlayPath, 'utf-8')
+    }
+  }
+  return null
+}
+
+async function loadInspectorFile(id: string): Promise<string> {
+  const { query } = parseRequest(id)
+  if (query.type) return
+
+  // read file ourselves to avoid getting shut out by vites fs.allow check
+  let file = idToFile(id)
+
+  // Apply transformations
+  file = resolveReactFilePath(file)
+
+  // Try to load overlay bundle first
+  const overlayContent = await loadOverlayFile(file)
+  if (overlayContent) return overlayContent
+
+  // Fallback to regular file loading
+  if (fs.existsSync(file)) {
+    return await fs.promises.readFile(file, 'utf-8')
+  }
+
+  throw new Error(`Inspector: File not found: ${file}`)
+}
+
 export const DEFAULT_INSPECTOR_OPTIONS: VitePluginInspectorOptions = {
   enabled: false,
   toggleComboKey: process.platform === 'darwin' ? 'meta-shift' : 'control-shift',
@@ -182,27 +230,10 @@ function VitePluginInspector(
 
       async load(id) {
         if (id === 'virtual:react-inspector-options') {
-          return `export default ${JSON.stringify({ ...normalizedOptions, base: config.base })}`
+          return createVirtualOptionsModule(normalizedOptions, config)
         }
         if (id.startsWith(inspectorPath)) {
-          const { query } = parseRequest(id)
-          if (query.type) return
-          // read file ourselves to avoid getting shut out by vites fs.allow check
-          let file = idToFile(id)
-
-          // Handle React-specific file routing - use load-react.js
-          if (file.endsWith('/load.js')) file = file.replace('/load.js', '/load-react.js')
-
-          // Serve bundled overlay instead of source overlay
-          if (file.endsWith('/Overlay.jsx')) {
-            const bundledOverlayPath = path.join(path.dirname(file), '../dist/overlay.bundle.js')
-            if (fs.existsSync(bundledOverlayPath)) {
-              return await fs.promises.readFile(bundledOverlayPath, 'utf-8')
-            }
-          }
-
-          if (fs.existsSync(file)) return await fs.promises.readFile(file, 'utf-8')
-          throw new Error(`Inspector: File not found: ${file}`)
+          return await loadInspectorFile(id)
         }
       },
       async transform(code, id) {

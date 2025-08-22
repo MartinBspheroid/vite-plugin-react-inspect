@@ -1,11 +1,11 @@
-import { useInspectorAPI } from './hooks/useInspectorAPI'
-import { useInspectorEvents } from './hooks/useInspectorEvents'
-import { useInspectorState } from './hooks/useInspectorState'
 import { InspectorButton } from './components/InspectorButton'
 import { InspectorHighlight } from './components/InspectorHighlight'
 import { InspectorOverlay } from './components/InspectorOverlay'
-import { KEY_IGNORE } from './utils/react-fiber'
+import { useInspectorAPI } from './hooks/useInspectorAPI'
+import { useInspectorEvents } from './hooks/useInspectorEvents'
+import { useInspectorState } from './hooks/useInspectorState'
 import { calculateFloatPosition, calculateSizeIndicatorStyle } from './utils/positioning'
+import { KEY_IGNORE } from './utils/react-fiber'
 
 // Default configuration for standalone bundle that matches useInspectorConfig structure
 const DEFAULT_CONFIG = {
@@ -13,22 +13,22 @@ const DEFAULT_CONFIG = {
   toggleCombo: ['meta', 'shift'],
   disableInspectorOnEditorOpen: false,
   animation: true,
-  
-  containerVisible: (enabled) => enabled,
-  
+
+  containerVisible: enabled => enabled,
+
   containerPosition: {
     top: '10px',
-    right: '10px'
+    right: '10px',
   },
-  
+
   bannerPosition: {
     top: '50px',
-    right: '-130px'
+    right: '-130px',
   },
-  
+
   floatsStyle: (position, floatsElement) => calculateFloatPosition(position, floatsElement),
-  
-  sizeIndicatorStyle: (position) => calculateSizeIndicatorStyle(position),
+
+  sizeIndicatorStyle: position => calculateSizeIndicatorStyle(position),
 }
 
 function ReactInspectorOverlay() {

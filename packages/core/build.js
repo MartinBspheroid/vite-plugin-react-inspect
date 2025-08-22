@@ -35,7 +35,7 @@ Promise.all([
     naming: '[dir]/[name].cjs',
     sourcemap: isDev ? 'inline' : false,
     watch: isDev,
-  })
+  }),
 ])
   .then(async () => {
     console.warn('✅ Main build completed successfully')

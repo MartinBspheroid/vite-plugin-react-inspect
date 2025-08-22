@@ -19,7 +19,10 @@
     "dev": "bun run --filter=./packages/core dev",
     "build": "bun run --filter=./packages/core build",
     "release": "bun run build && changeset && changeset version && changeset publish",
-    "bump": "bumpp"
+    "bump": "bumpp",
+    "prepare": "lefthook install",
+    "hooks:install": "lefthook install",
+    "hooks:uninstall": "lefthook uninstall"
   },
   "workspaces": {
     "packages": [
@@ -42,6 +45,7 @@
     "@changesets/cli": "^2.29.6",
     "@types/node": "catalog:",
     "bumpp": "^10.2.3",
+    "lefthook": "^1.12.3",
     "typescript": "catalog:",
     "vite": "catalog:"
   }

@@ -75,7 +75,7 @@ export function useInspectorEvents(
     )
   }, [config.toggleCombo, actions.toggleEnabled, actions.disable, actions.closeOverlay])()
   // IMPORTANT: This is a hack to get the event handler to be re-created on config change
-  
+
   // Window resize handler - close overlay
   const handleResize = useCallback(() => {
     actions.closeOverlay()

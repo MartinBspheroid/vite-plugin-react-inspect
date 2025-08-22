@@ -1,0 +1,53 @@
+# Lefthook Git Hooks Configuration
+# Fast and powerful Git hooks manager - https://github.com/evilmartians/lefthook
+
+pre-commit:
+  
+  commands:
+    # Check code quality with Biome (linting + formatting)
+    check:
+      glob: "*.{js,ts,jsx,tsx,json,md}"
+      run: bun run check
+      stage_fixed: true
+    
+    # Format code with Biome
+    format:
+      glob: "*.{js,ts,jsx,tsx,json,md}"
+      run: bun run format
+      stage_fixed: true
+    
+    # Lint and auto-fix with Biome
+    lint:
+      glob: "*.{js,ts,jsx,tsx,json,md}"
+      run: bun run lint
+      stage_fixed: true
+
+# Optional: Validate commit messages
+commit-msg:
+  commands:
+    # Ensure commit message follows conventional format
+    commitlint:
+      run: |
+        if ! echo "{1}" | grep -qE "^(feat|fix|docs|style|refactor|perf|test|chore|build|ci)(\(.+\))?: .{1,200}"; then
+          echo "❌ Commit message must follow conventional format:"
+          echo "   type(scope): description"
+          echo "   Types: feat, fix, docs, style, refactor, perf, test, chore, build, ci"
+          echo "   Example: feat(core): add new inspector feature"
+          exit 1
+        fi
+
+# Optional: Run quick checks before push
+pre-push:
+  commands:
+    # Build the project to ensure it compiles
+    build:
+      run: bun run build
+      
+# Optional: Post-checkout hook to remind about dependencies
+post-checkout:
+  commands:
+    remind:
+      run: |
+        if [ "{1}" != "{2}" ]; then
+          echo "📦 Don't forget to run 'bun install' if dependencies changed!"
+        fi
