@@ -3,7 +3,13 @@ import { calculateFloatPosition } from '../utils/positioning'
 
 export function InspectorOverlay({ linkParams, position, animation }) {
   const floatsRef = useRef(null)
-  const [floatsStyle, setFloatsStyle] = useState({ left: '0px', top: '0px' })
+  const [floatsStyle, setFloatsStyle] = useState(() => {
+    // Initialize with calculated position if available, otherwise null to avoid rendering
+    if (position) {
+      return calculateFloatPosition(position, null)
+    }
+    return null
+  })
 
   // Calculate position dynamically when position or ref changes
   useEffect(() => {
@@ -13,7 +19,7 @@ export function InspectorOverlay({ linkParams, position, animation }) {
     }
   }, [position])
 
-  if (!linkParams || !linkParams.file) return null
+  if (!linkParams || !linkParams.file || !floatsStyle) return null
 
   return (
     <div

@@ -1,9 +1,12 @@
-name: Publish Package
+# DISABLED: This workflow conflicts with release.yml (Changesets)
+# Use release.yml for publishing instead
+name: Publish Package (DISABLED)
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch: # Manual trigger only
+  # push:
+  #   tags:
+  #     - 'v*.*.*'
 
 jobs:
   publish:
