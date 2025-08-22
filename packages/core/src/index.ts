@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
-import { dim } from 'kolorist'
+
 import type { PluginOption, ResolvedConfig } from 'vite'
 import { normalizePath } from 'vite'
 import { compileSFCTemplate } from './compiler'
@@ -123,22 +123,9 @@ export interface VitePluginInspectorOptions {
   reduceMotion?: boolean
 }
 
-const toggleComboKeysMap = {
-  control: process.platform === 'darwin' ? 'Control(^)' : 'Ctrl(^)',
-  meta: 'Command(⌘)',
-  shift: 'Shift(⇧)',
-}
-
 function getInspectorPath() {
   const pluginPath = normalizePath(path.dirname(fileURLToPath(import.meta.url)))
   return pluginPath.replace(/\/dist$/, '/src')
-}
-
-export function normalizeComboKeyPrint(toggleComboKey: string) {
-  return toggleComboKey
-    .split('-')
-    .map(key => toggleComboKeysMap[key] || key[0].toUpperCase() + key.slice(1))
-    .join(dim('+'))
 }
 
 function createVirtualOptionsModule(
