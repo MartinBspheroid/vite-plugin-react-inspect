@@ -1,0 +1,552 @@
+# Migration Progress Tracker
+# Replace tsup/unplugin with Bun for Vite Plugin Development
+
+project:
+  name: "vite-plugin-react-inspector Migration to Bun"
+  version: "1.1.1"
+  start_date: "2025-01-22"
+  status: "not_started"
+  
+phases:
+  phase_1:
+    name: "Package Manager Migration"
+    description: "Replace pnpm with Bun package manager for faster installs and native TypeScript support"
+    status: "not_started"
+    priority: "high"
+    risk_level: "low"
+    estimated_hours: 4
+    dependencies: []
+    rollback_plan: "Restore pnpm-lock.yaml and reinstall with pnpm"
+    
+    tasks:
+      p1_t1_backup_lockfiles:
+        name: "Backup existing lockfiles and package configurations"
+        description: "Create backup of pnpm-lock.yaml and pnpm workspace configuration to enable quick rollback if needed"
+        status: "not_started"
+        estimated_minutes: 15
+        acceptance_criteria:
+          - "pnpm-lock.yaml is backed up to pnpm-lock.yaml.backup"
+          - "Root package.json pnpm config is documented"
+          - "Workspace configuration is preserved"
+        commands:
+          - "cp pnpm-lock.yaml pnpm-lock.yaml.backup"
+          - "cp package.json package.json.backup"
+        validation:
+          - "Backup files exist and are readable"
+          - "Original functionality works with pnpm"
+
+      p1_t2_install_bun:
+        name: "Install and verify Bun runtime"
+        description: "Ensure Bun is installed and working correctly on the system before migration"
+        status: "not_started"
+        estimated_minutes: 10
+        dependencies: ["p1_t1_backup_lockfiles"]
+        acceptance_criteria:
+          - "Bun version >= 1.0.0 is installed"
+          - "Bun can run TypeScript files"
+          - "Bun package manager is functional"
+        commands:
+          - "bun --version"
+          - "bun run --help"
+        validation:
+          - "bun --version returns valid version number"
+          - "bun can execute simple TypeScript file"
+
+      p1_t3_remove_pnpm_artifacts:
+        name: "Remove pnpm lockfile and node_modules"
+        description: "Clean slate installation by removing pnpm-specific files before Bun installation"
+        status: "not_started"
+        estimated_minutes: 5
+        dependencies: ["p1_t2_install_bun"]
+        acceptance_criteria:
+          - "pnpm-lock.yaml is removed"
+          - "node_modules directories are cleaned"
+          - "Package cache is cleared"
+        commands:
+          - "rm -f pnpm-lock.yaml"
+          - "rm -rf node_modules packages/*/node_modules"
+        validation:
+          - "No pnpm-lock.yaml exists in project"
+          - "node_modules directories are removed"
+
+      p1_t4_bun_install:
+        name: "Install dependencies with Bun"
+        description: "Use Bun to install all dependencies and generate bun.lockb file"
+        status: "not_started"
+        estimated_minutes: 30
+        dependencies: ["p1_t3_remove_pnpm_artifacts"]
+        acceptance_criteria:
+          - "bun.lockb is generated"
+          - "All dependencies are installed correctly"
+          - "Workspace dependencies are properly linked"
+        commands:
+          - "bun install"
+        validation:
+          - "bun.lockb exists and is valid"
+          - "node_modules structure matches previous installation"
+          - "bun run dev works in playground"
+
+      p1_t5_update_scripts:
+        name: "Update package.json scripts to use Bun"
+        description: "Replace pnpm commands with bun equivalents in all package.json scripts"
+        status: "not_started"
+        estimated_minutes: 20
+        dependencies: ["p1_t4_bun_install"]
+        acceptance_criteria:
+          - "Root scripts use bun run --filter instead of pnpm run -r --filter"
+          - "All workspace scripts are updated"
+          - "Scripts maintain same functionality"
+        files_to_modify:
+          - "package.json"
+          - "packages/core/package.json"
+        validation:
+          - "bun run dev works from root"
+          - "bun run build works from root"
+          - "Individual package scripts work with bun"
+
+      p1_t6_test_workspace_functionality:
+        name: "Verify workspace and monorepo functionality"
+        description: "Test that all workspace features work correctly with Bun package manager"
+        status: "not_started"
+        estimated_minutes: 30
+        dependencies: ["p1_t5_update_scripts"]
+        acceptance_criteria:
+          - "Workspace dependencies resolve correctly"
+          - "Cross-package imports work"
+          - "Development workflow is functional"
+        test_commands:
+          - "bun run dev"
+          - "bun run build"
+          - "bun run play:react"
+        validation:
+          - "Playground application starts without errors"
+          - "Plugin loads and functions correctly"
+          - "Hot reload works in development"
+
+  phase_2:
+    name: "Bundler Replacement"
+    description: "Replace tsup with Bun's native bundler while maintaining dual ESM/CJS output"
+    status: "not_started"
+    priority: "high"
+    risk_level: "medium"
+    estimated_hours: 8
+    dependencies: ["phase_1"]
+    rollback_plan: "Restore tsup.config.ts and revert build scripts"
+    
+    tasks:
+      p2_t1_analyze_tsup_config:
+        name: "Analyze current tsup configuration and requirements"
+        description: "Document all tsup features and configurations that need to be replicated with Bun build"
+        status: "not_started"
+        estimated_minutes: 30
+        acceptance_criteria:
+          - "All tsup options are documented"
+          - "Output formats (ESM/CJS) are identified"
+          - "External dependencies are listed"
+          - "TypeScript declaration generation is noted"
+        deliverables:
+          - "tsup-analysis.md file in tasks folder"
+        validation:
+          - "Analysis covers all current build requirements"
+          - "No tsup features are missed"
+
+      p2_t2_create_bun_build_script:
+        name: "Create Bun build script with equivalent functionality"
+        description: "Implement build.js script that replicates all tsup functionality using Bun.build API"
+        status: "not_started"
+        estimated_minutes: 60
+        dependencies: ["p2_t1_analyze_tsup_config"]
+        acceptance_criteria:
+          - "ESM build outputs to dist/index.mjs"
+          - "CJS build outputs to dist/index.cjs"
+          - "TypeScript declarations are generated"
+          - "External dependencies are properly handled"
+        files_to_create:
+          - "packages/core/build.js"
+        validation:
+          - "Build script runs without errors"
+          - "Output files match tsup format"
+          - "File sizes are comparable"
+
+      p2_t3_update_build_scripts:
+        name: "Update package.json scripts to use new Bun build"
+        description: "Replace tsup commands with bun build.js in all relevant scripts"
+        status: "not_started"
+        estimated_minutes: 15
+        dependencies: ["p2_t2_create_bun_build_script"]
+        acceptance_criteria:
+          - "build script uses new build.js"
+          - "dev script supports watch mode"
+          - "prebuild script is updated if needed"
+        files_to_modify:
+          - "packages/core/package.json"
+        validation:
+          - "bun run build produces correct output"
+          - "bun run dev watches for changes"
+
+      p2_t4_verify_output_compatibility:
+        name: "Verify output files are compatible with existing consumers"
+        description: "Test that generated files work with playground and maintain API compatibility"
+        status: "not_started"
+        estimated_minutes: 45
+        dependencies: ["p2_t3_update_build_scripts"]
+        acceptance_criteria:
+          - "ESM import works in playground"
+          - "CJS require works for Node.js consumers"
+          - "TypeScript types are correctly exported"
+          - "Plugin functionality is unchanged"
+        test_scenarios:
+          - "Import plugin in Vite config"
+          - "Use plugin in React playground"
+          - "Verify TypeScript intellisense"
+        validation:
+          - "Playground runs without errors"
+          - "Plugin inspector functionality works"
+          - "No breaking changes in API"
+
+      p2_t5_performance_comparison:
+        name: "Compare build performance between tsup and Bun"
+        description: "Measure and document build time improvements with Bun bundler"
+        status: "not_started"
+        estimated_minutes: 20
+        dependencies: ["p2_t4_verify_output_compatibility"]
+        acceptance_criteria:
+          - "Build times are measured for both bundlers"
+          - "Performance improvements are documented"
+          - "Bundle sizes are compared"
+        deliverables:
+          - "performance-comparison.md in tasks folder"
+        validation:
+          - "Bun build is faster than tsup"
+          - "Bundle size is maintained or improved"
+
+      p2_t6_remove_tsup_dependencies:
+        name: "Remove tsup and related dependencies"
+        description: "Clean up tsup configuration and dependencies after successful migration"
+        status: "not_started"
+        estimated_minutes: 10
+        dependencies: ["p2_t5_performance_comparison"]
+        acceptance_criteria:
+          - "tsup.config.ts is removed"
+          - "tsup dependency is removed from package.json"
+          - "No references to tsup remain in scripts"
+        files_to_remove:
+          - "packages/core/tsup.config.ts"
+        files_to_modify:
+          - "packages/core/package.json"
+        validation:
+          - "Build still works without tsup"
+          - "No unused dependencies remain"
+
+  phase_3:
+    name: "Overlay Bundling Simplification"
+    description: "Replace complex string-based bundled-sources system with direct Bun bundling"
+    status: "not_started"
+    priority: "high"
+    risk_level: "high"
+    estimated_hours: 12
+    dependencies: ["phase_2"]
+    rollback_plan: "Restore generate-bundled-sources.js script and bundled-sources.ts approach"
+    
+    tasks:
+      p3_t1_analyze_current_overlay_system:
+        name: "Analyze current Overlay.jsx bundling and virtual module system"
+        description: "Document how the current system works with bundled-sources.ts and virtual modules"
+        status: "not_started"
+        estimated_minutes: 45
+        acceptance_criteria:
+          - "Current virtual module flow is documented"
+          - "All Overlay.jsx dependencies are identified"
+          - "String-based serving mechanism is understood"
+        deliverables:
+          - "overlay-system-analysis.md in tasks folder"
+        validation:
+          - "Analysis covers complete data flow"
+          - "All virtual module paths are documented"
+
+      p3_t2_create_overlay_bundle_script:
+        name: "Create Bun script to bundle Overlay.jsx as single file"
+        description: "Implement build process that bundles Overlay.jsx and dependencies into single distributable file"
+        status: "not_started"
+        estimated_minutes: 90
+        dependencies: ["p3_t1_analyze_current_overlay_system"]
+        acceptance_criteria:
+          - "Overlay.jsx bundles with all dependencies"
+          - "React and react-dom remain external"
+          - "Bundle is minified and optimized"
+          - "JSX is properly transformed"
+        files_to_create:
+          - "packages/core/build-overlay.js"
+        validation:
+          - "Overlay bundle is generated successfully"
+          - "Bundle contains all required components"
+          - "File size is reasonable"
+
+      p3_t3_update_virtual_module_system:
+        name: "Modify virtual module loading to serve bundled overlay"
+        description: "Update the plugin's virtual module system to serve the pre-bundled overlay file instead of generating from strings"
+        status: "not_started"
+        estimated_minutes: 60
+        dependencies: ["p3_t2_create_overlay_bundle_script"]
+        acceptance_criteria:
+          - "Virtual module serves bundled overlay file"
+          - "File path resolution works correctly"
+          - "Both development and production modes work"
+        files_to_modify:
+          - "packages/core/src/index.ts"
+        validation:
+          - "Virtual module resolves correctly"
+          - "Overlay loads in browser"
+          - "No console errors during load"
+
+      p3_t4_test_overlay_functionality:
+        name: "Comprehensive testing of overlay functionality"
+        description: "Test all overlay features work correctly with new bundling approach"
+        status: "not_started"
+        estimated_minutes: 60
+        dependencies: ["p3_t3_update_virtual_module_system"]
+        acceptance_criteria:
+          - "Inspector overlay displays correctly"
+          - "All interactive features work"
+          - "Styling and positioning is correct"
+          - "Hot reload works with overlay changes"
+        test_scenarios:
+          - "Enable/disable inspector"
+          - "Click elements to open in editor"
+          - "Test keyboard shortcuts"
+          - "Verify overlay positioning"
+        validation:
+          - "All overlay features function correctly"
+          - "No regression in user experience"
+
+      p3_t5_update_build_pipeline:
+        name: "Integrate overlay bundling into main build process"
+        description: "Ensure overlay is built as part of the main package build process"
+        status: "not_started"
+        estimated_minutes: 30
+        dependencies: ["p3_t4_test_overlay_functionality"]
+        acceptance_criteria:
+          - "Overlay builds before main plugin build"
+          - "Build process is atomic and reliable"
+          - "Watch mode rebuilds overlay on changes"
+        files_to_modify:
+          - "packages/core/build.js"
+          - "packages/core/package.json"
+        validation:
+          - "Full build completes successfully"
+          - "Overlay is included in distribution"
+
+      p3_t6_remove_legacy_bundling_system:
+        name: "Remove old bundled-sources.ts and generation script"
+        description: "Clean up the old string-based bundling system after successful migration"
+        status: "not_started"
+        estimated_minutes: 20
+        dependencies: ["p3_t5_update_build_pipeline"]
+        acceptance_criteria:
+          - "generate-bundled-sources.js is removed"
+          - "bundled-sources.ts references are removed"
+          - "prebuild script is simplified"
+        files_to_remove:
+          - "packages/core/scripts/generate-bundled-sources.js"
+          - "packages/core/src/bundled-sources.ts"
+        files_to_modify:
+          - "packages/core/package.json"
+          - "packages/core/src/index.ts"
+        validation:
+          - "Plugin works without legacy system"
+          - "No dead code remains"
+
+  phase_4:
+    name: "Remove unplugin Framework"
+    description: "Convert to native Vite plugin API, removing cross-bundler abstractions"
+    status: "not_started"
+    priority: "medium"
+    risk_level: "medium"
+    estimated_hours: 6
+    dependencies: ["phase_3"]
+    rollback_plan: "Restore unplugin dependency and cross-bundler code"
+    
+    tasks:
+      p4_t1_audit_unplugin_usage:
+        name: "Audit current unplugin usage and cross-bundler features"
+        description: "Identify all unplugin-specific code and determine what needs to be converted to native Vite API"
+        status: "not_started"
+        estimated_minutes: 30
+        acceptance_criteria:
+          - "All unplugin imports are identified"
+          - "Cross-bundler compatibility code is documented"
+          - "Vite-specific features are noted"
+        deliverables:
+          - "unplugin-audit.md in tasks folder"
+        validation:
+          - "Complete inventory of unplugin dependencies"
+          - "Clear migration path is documented"
+
+      p4_t2_convert_to_native_vite_plugin:
+        name: "Convert plugin to use native Vite Plugin API"
+        description: "Rewrite plugin code to use Vite's native Plugin interface instead of unplugin"
+        status: "not_started"
+        estimated_minutes: 120
+        dependencies: ["p4_t1_audit_unplugin_usage"]
+        acceptance_criteria:
+          - "Plugin uses Vite Plugin interface"
+          - "All hooks are converted to native Vite equivalents"
+          - "TypeScript types are properly imported from Vite"
+        files_to_modify:
+          - "packages/core/src/index.ts"
+        validation:
+          - "Plugin compiles without unplugin imports"
+          - "TypeScript types are correct"
+
+      p4_t3_test_native_plugin_functionality:
+        name: "Test plugin functionality with native Vite API"
+        description: "Comprehensive testing to ensure no functionality is lost in the conversion"
+        status: "not_started"
+        estimated_minutes: 45
+        dependencies: ["p4_t2_convert_to_native_vite_plugin"]
+        acceptance_criteria:
+          - "All plugin features work in development"
+          - "Plugin integrates correctly with Vite"
+          - "Performance is maintained or improved"
+        test_scenarios:
+          - "Development server startup"
+          - "Hot module replacement"
+          - "Plugin option handling"
+          - "Transform and load hooks"
+        validation:
+          - "No functional regressions"
+          - "Plugin works as expected in playground"
+
+      p4_t4_update_exports_and_types:
+        name: "Update package exports and TypeScript declarations"
+        description: "Ensure package exports correctly expose the native Vite plugin without unplugin references"
+        status: "not_started"
+        estimated_minutes: 20
+        dependencies: ["p4_t3_test_native_plugin_functionality"]
+        acceptance_criteria:
+          - "Package exports point to correct files"
+          - "TypeScript declarations are accurate"
+          - "No unplugin types are exposed"
+        files_to_modify:
+          - "packages/core/package.json"
+        validation:
+          - "Import statements work correctly"
+          - "TypeScript intellisense is accurate"
+
+      p4_t5_remove_unplugin_dependency:
+        name: "Remove unplugin dependency and unused code"
+        description: "Clean removal of unplugin from dependencies and any remaining cross-bundler code"
+        status: "not_started"
+        estimated_minutes: 15
+        dependencies: ["p4_t4_update_exports_and_types"]
+        acceptance_criteria:
+          - "unplugin is removed from package.json"
+          - "No imports reference unplugin"
+          - "Bundle size is reduced"
+        files_to_modify:
+          - "packages/core/package.json"
+        validation:
+          - "Plugin builds without unplugin"
+          - "No runtime errors related to unplugin"
+
+      p4_t6_final_integration_test:
+        name: "Final comprehensive integration testing"
+        description: "Complete end-to-end testing of the migrated plugin in real-world scenarios"
+        status: "not_started"
+        estimated_minutes: 60
+        dependencies: ["p4_t5_remove_unplugin_dependency"]
+        acceptance_criteria:
+          - "Plugin works in multiple Vite projects"
+          - "All configuration options function"
+          - "Performance meets or exceeds original"
+        test_scenarios:
+          - "Fresh Vite project integration"
+          - "Complex React application"
+          - "Different Vite configurations"
+        validation:
+          - "No breaking changes for end users"
+          - "Plugin is ready for production use"
+
+  validation:
+    name: "Final Validation and Testing"
+    description: "Comprehensive testing and validation of the complete migration"
+    status: "not_started"
+    priority: "critical"
+    estimated_hours: 4
+    dependencies: ["phase_1", "phase_2", "phase_3", "phase_4"]
+    
+    tasks:
+      v_t1_performance_benchmarking:
+        name: "Complete performance benchmarking"
+        description: "Measure and document performance improvements across all aspects"
+        status: "not_started"
+        estimated_minutes: 60
+        acceptance_criteria:
+          - "Install time improvements documented"
+          - "Build time improvements documented"  
+          - "Bundle size comparison completed"
+          - "Development server startup time measured"
+        deliverables:
+          - "final-performance-report.md"
+
+      v_t2_regression_testing:
+        name: "Comprehensive regression testing"
+        description: "Test all plugin features to ensure no regressions were introduced"
+        status: "not_started" 
+        estimated_minutes: 90
+        acceptance_criteria:
+          - "All original features work correctly"
+          - "Configuration options function properly"
+          - "Edge cases are handled"
+        test_scenarios:
+          - "Multiple framework support"
+          - "Various Vite configurations"
+          - "Error handling scenarios"
+
+      v_t3_documentation_update:
+        name: "Update documentation and README"
+        description: "Update all documentation to reflect new Bun-based build system"
+        status: "not_started"
+        estimated_minutes: 45
+        acceptance_criteria:
+          - "README reflects new build requirements"
+          - "Development setup instructions updated"
+          - "Migration notes added"
+
+  commit_strategy:
+    approach: "atomic_commits"
+    description: "Each completed task should be committed individually with descriptive commit messages"
+    message_format: "feat(migration): [phase]-[task] - [description]"
+    examples:
+      - "feat(migration): p1-t1 - backup lockfiles and package configurations"
+      - "feat(migration): p2-t2 - create Bun build script with ESM/CJS output"
+      - "feat(migration): p3-t3 - update virtual module system for bundled overlay"
+
+  success_metrics:
+    performance:
+      - "Package install time improved by >20x"
+      - "Build time improved by >1.5x"
+      - "Development server startup <2s"
+    complexity:
+      - "Dependencies reduced by >3 packages"
+      - "Build configuration simplified to single script"
+      - "Lines of build-related code reduced by >50%"
+    functionality:
+      - "Zero breaking changes to plugin API"
+      - "All overlay features functional"
+      - "Hot reload performance maintained"
+
+  rollback_procedures:
+    emergency_rollback:
+      description: "Quick rollback to working state if critical issues arise"
+      steps:
+        - "git reset --hard [last-known-good-commit]"
+        - "Restore pnpm-lock.yaml.backup"
+        - "Run pnpm install"
+        - "Verify functionality"
+    
+    phase_specific_rollback:
+      phase_1: "Restore pnpm-lock.yaml and reinstall with pnpm"
+      phase_2: "Restore tsup.config.ts and update package.json scripts"
+      phase_3: "Restore generate-bundled-sources.js and bundled-sources.ts"
+      phase_4: "Restore unplugin dependency and cross-bundler code"
