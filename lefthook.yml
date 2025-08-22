@@ -22,19 +22,7 @@ pre-commit:
       run: bun run lint
       stage_fixed: true
 
-# Optional: Validate commit messages
-commit-msg:
-  commands:
-    # Ensure commit message follows conventional format
-    commitlint:
-      run: |
-        if ! echo "{1}" | grep -qE "^(feat|fix|docs|style|refactor|perf|test|chore|build|ci)(\(.+\))?: .{1,200}"; then
-          echo "❌ Commit message must follow conventional format:"
-          echo "   type(scope): description"
-          echo "   Types: feat, fix, docs, style, refactor, perf, test, chore, build, ci"
-          echo "   Example: feat(core): add new inspector feature"
-          exit 1
-        fi
+
 
 # Optional: Run quick checks before push
 pre-push:
