@@ -1,5 +1,6 @@
 # Migration Progress Tracker
 # Replace tsup/unplugin with Bun for Vite Plugin Development
+# Simply update task status: not_started -> in_progress -> completed
 
 project:
   name: "vite-plugin-react-inspector Migration to Bun"
