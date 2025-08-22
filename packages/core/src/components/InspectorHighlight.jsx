@@ -1,12 +1,7 @@
-export function InspectorHighlight({
-  sizeIndicatorStyle,
-  animation,
-}) {
+export function InspectorHighlight({ sizeIndicatorStyle, animation }) {
   return (
     <div
-      className={`react-inspector-size-indicator ${
-        animation ? 'react-inspector-animated' : ''
-      }`}
+      className={`react-inspector-size-indicator ${animation ? 'react-inspector-animated' : ''}`}
       style={{
         ...sizeIndicatorStyle,
         zIndex: 2147483646,

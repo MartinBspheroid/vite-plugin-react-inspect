@@ -1,7 +1,7 @@
-import type { LinkParams } from '../utils/editor'
-import type { Position } from '../utils/positioning'
 import { useCallback, useState } from 'react'
+import type { LinkParams } from '../utils/editor'
 import { createEmptyLinkParams } from '../utils/editor'
+import type { Position } from '../utils/positioning'
 
 // @ts-expect-error - Virtual module
 
@@ -21,7 +21,7 @@ export interface InspectorActions {
   enable: () => void
   disable: () => void
   closeOverlay: () => void
-  updateLinkParams: (params: { position: Position, linkParams: LinkParams } | null) => void
+  updateLinkParams: (params: { position: Position; linkParams: LinkParams } | null) => void
 }
 
 export function useInspectorState(): [InspectorState, InspectorActions] {
@@ -57,11 +57,11 @@ export function useInspectorState(): [InspectorState, InspectorActions] {
   }, [])
 
   const enable = useCallback(() => {
-    setState(prev => prev.enabled ? prev : { ...prev, enabled: true })
+    setState(prev => (prev.enabled ? prev : { ...prev, enabled: true }))
   }, [])
 
   const disable = useCallback(() => {
-    setState(prev => prev.enabled ? { ...prev, enabled: false } : prev)
+    setState(prev => (prev.enabled ? { ...prev, enabled: false } : prev))
   }, [])
 
   const closeOverlay = useCallback(() => {
@@ -72,23 +72,25 @@ export function useInspectorState(): [InspectorState, InspectorActions] {
     }))
   }, [])
 
-  const updateLinkParams = useCallback((update: { position: Position, linkParams: LinkParams } | null) => {
-    if (update) {
-      setState(prev => ({
-        ...prev,
-        overlayVisible: true,
-        position: update.position,
-        linkParams: update.linkParams,
-      }))
-    }
-    else {
-      setState(prev => ({
-        ...prev,
-        overlayVisible: false,
-        linkParams: createEmptyLinkParams(),
-      }))
-    }
-  }, [])
+  const updateLinkParams = useCallback(
+    (update: { position: Position; linkParams: LinkParams } | null) => {
+      if (update) {
+        setState(prev => ({
+          ...prev,
+          overlayVisible: true,
+          position: update.position,
+          linkParams: update.linkParams,
+        }))
+      } else {
+        setState(prev => ({
+          ...prev,
+          overlayVisible: false,
+          linkParams: createEmptyLinkParams(),
+        }))
+      }
+    },
+    []
+  )
 
   const actions: InspectorActions = {
     setEnabled,

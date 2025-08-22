@@ -19,33 +19,36 @@ jobs:
           # This makes Actions fetch all Git history so that Changesets can generate changelogs
           fetch-depth: 0
 
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y unzip
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org/'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: latest
+          bun-version: latest
 
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-
+            ${{ runner.os }}-bun-
 
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint
+        run: bun run lint
 
       - name: Build
-        run: pnpm build
+        run: bun run build
 
       # Copy README and LICENSE to packages for npm
       - name: Copy README to core package
@@ -59,7 +62,7 @@ jobs:
         uses: changesets/action@v1
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: pnpm release
+          publish: bun run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

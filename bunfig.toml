@@ -1,0 +1,6 @@
+[workspace]
+# Define the workspace packages
+packages = [
+  "packages/core",
+  "packages/playground/react"
+]

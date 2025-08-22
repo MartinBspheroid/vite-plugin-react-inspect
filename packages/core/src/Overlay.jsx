@@ -3,7 +3,6 @@ import { InspectorHighlight } from './components/InspectorHighlight'
 import { InspectorOverlay } from './components/InspectorOverlay'
 import { useInspectorAPI } from './hooks/useInspectorAPI'
 import { useInspectorConfig } from './hooks/useInspectorConfig'
-
 import { useInspectorEvents } from './hooks/useInspectorEvents'
 import { useInspectorState } from './hooks/useInspectorState'
 import { KEY_IGNORE } from './utils/react-fiber'

@@ -7,9 +7,21 @@ export { KEY_DATA, KEY_IGNORE, KEY_PROPS_DATA }
 // Re-export from positioning utils
 export { getElementRect } from './positioning'
 
+interface ReactFiberElement extends Element {
+  _reactInternalFiber?: ReactFiberNode
+  __reactInternalInstance?: ReactFiberNode
+}
+
+interface ReactFiberNode {
+  return?: {
+    memoizedProps?: Record<string, unknown>
+  }
+}
+
 export function getComponentData(el: Element): string | null {
   // For React, try to get data from fiber node
-  const fiberNode = (el as any)?._reactInternalFiber ?? (el as any)?.__reactInternalInstance
+  const reactElement = el as ReactFiberElement
+  const fiberNode = reactElement._reactInternalFiber ?? reactElement.__reactInternalInstance
   if (fiberNode?.return?.memoizedProps?.[KEY_PROPS_DATA])
     return fiberNode.return.memoizedProps[KEY_PROPS_DATA]
 
@@ -18,9 +30,9 @@ export function getComponentData(el: Element): string | null {
 
 export function getData(el: Element): string | null {
   return (
-    (el as any)?.__reactInternalInstance?.memoizedProps?.[KEY_PROPS_DATA]
-    ?? getComponentData(el)
-    ?? el?.getAttribute?.(KEY_DATA)
+    (el as ReactFiberElement)?.__reactInternalInstance?.return?.memoizedProps?.[KEY_PROPS_DATA] ??
+    getComponentData(el) ??
+    el?.getAttribute?.(KEY_DATA)
   )
 }
 
@@ -34,9 +46,15 @@ export interface TargetNodeResult {
   } | null
 }
 
+interface ExtendedEvent extends Event {
+  path?: EventTarget[]
+  composedPath?: () => EventTarget[]
+}
+
 export function getTargetNode(event: Event): TargetNodeResult {
   const splitRE = /(.+):(\d+):(\d+)$/
-  const path = (event as any).path ?? (event as any).composedPath()
+  const extendedEvent = event as ExtendedEvent
+  const path = extendedEvent.path ?? extendedEvent.composedPath?.()
 
   if (!path) {
     return {
@@ -45,13 +63,9 @@ export function getTargetNode(event: Event): TargetNodeResult {
     }
   }
 
-  const ignoreIndex = path.findIndex((node: Element) =>
-    node?.hasAttribute?.(KEY_IGNORE),
-  )
+  const ignoreIndex = path.findIndex((node: Element) => node?.hasAttribute?.(KEY_IGNORE))
 
-  const targetNode = path
-    .slice(ignoreIndex + 1)
-    .find((node: Element) => getData(node))
+  const targetNode = path.slice(ignoreIndex + 1).find((node: Element) => getData(node))
 
   if (!targetNode) {
     return {

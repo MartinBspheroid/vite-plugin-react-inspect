@@ -7,9 +7,8 @@ export default defineConfig({
   plugins: [
     Inspector({
       enabled: true,
-      toggleComboKey: 'meta-shift',
+      toggleComboKey: "meta-shift"
     }),
     react(),
-
   ],
 })

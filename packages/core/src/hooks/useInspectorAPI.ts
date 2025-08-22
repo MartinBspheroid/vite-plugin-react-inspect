@@ -1,5 +1,5 @@
-import type { InspectorActions, InspectorState } from './useInspectorState'
 import { useCallback, useEffect } from 'react'
+import type { InspectorActions, InspectorState } from './useInspectorState'
 
 export interface ReactInspectorClient {
   enabled: boolean
@@ -26,7 +26,7 @@ export interface ReactInspectorClient {
 export function useInspectorAPI(
   state: InspectorState,
   actions: InspectorActions,
-  openInEditor: (url: URL) => void,
+  openInEditor: (url: URL) => void
 ) {
   // Callback stubs for programmatic replacement
   const onEnabled = useCallback(() => {
@@ -77,10 +77,8 @@ export function useInspectorAPI(
 
   // Call lifecycle callbacks
   useEffect(() => {
-    if (state.enabled)
-      onEnabled()
-    else
-      onDisabled()
+    if (state.enabled) onEnabled()
+    else onDisabled()
   }, [state.enabled, onEnabled, onDisabled])
 
   // Return callbacks for external use

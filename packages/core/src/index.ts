@@ -1,9 +1,9 @@
-import type { PluginOption, ResolvedConfig } from 'vite'
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { dim } from 'kolorist'
+import type { PluginOption, ResolvedConfig } from 'vite'
 import { normalizePath } from 'vite'
 import { compileSFCTemplate } from './compiler'
 import { idToFile, parseRequest } from './utils'
@@ -93,7 +93,28 @@ export interface VitePluginInspectorOptions {
    *
    * @default process.env.LAUNCH_EDITOR ?? code (Visual Studio Code)
    */
-  launchEditor?: 'appcode' | 'atom' | 'atom-beta' | 'brackets' | 'clion' | 'code' | 'code-insiders' | 'codium' | 'emacs' | 'idea' | 'notepad++' | 'pycharm' | 'phpstorm' | 'rubymine' | 'sublime' | 'vim' | 'visualstudio' | 'webstorm' | 'rider' | 'cursor' | string
+  launchEditor?:
+    | 'appcode'
+    | 'atom'
+    | 'atom-beta'
+    | 'brackets'
+    | 'clion'
+    | 'code'
+    | 'code-insiders'
+    | 'codium'
+    | 'emacs'
+    | 'idea'
+    | 'notepad++'
+    | 'pycharm'
+    | 'phpstorm'
+    | 'rubymine'
+    | 'sublime'
+    | 'vim'
+    | 'visualstudio'
+    | 'webstorm'
+    | 'rider'
+    | 'cursor'
+    | string
 
   /**
    * Disable animation/transition, will auto disable when `prefers-reduced-motion` is set
@@ -114,7 +135,10 @@ function getInspectorPath() {
 }
 
 export function normalizeComboKeyPrint(toggleComboKey: string) {
-  return toggleComboKey.split('-').map(key => toggleComboKeysMap[key] || key[0].toUpperCase() + key.slice(1)).join(dim('+'))
+  return toggleComboKey
+    .split('-')
+    .map(key => toggleComboKeysMap[key] || key[0].toUpperCase() + key.slice(1))
+    .join(dim('+'))
 }
 
 export const DEFAULT_INSPECTOR_OPTIONS: VitePluginInspectorOptions = {
@@ -128,7 +152,9 @@ export const DEFAULT_INSPECTOR_OPTIONS: VitePluginInspectorOptions = {
   reduceMotion: false,
 } as const
 
-function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPECTOR_OPTIONS): PluginOption {
+function VitePluginInspector(
+  options: VitePluginInspectorOptions = DEFAULT_INSPECTOR_OPTIONS
+): PluginOption {
   const inspectorPath = getInspectorPath()
   const normalizedOptions = {
     ...DEFAULT_INSPECTOR_OPTIONS,
@@ -138,8 +164,7 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
 
   const { appendTo } = normalizedOptions
 
-  if (normalizedOptions.launchEditor)
-    process.env.LAUNCH_EDITOR = normalizedOptions.launchEditor
+  if (normalizedOptions.launchEditor) process.env.LAUNCH_EDITOR = normalizedOptions.launchEditor
 
   return [
     {
@@ -150,9 +175,8 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
         return command === 'serve' && process.env.NODE_ENV !== 'test'
       },
       async resolveId(importee: string) {
-        if (importee.startsWith('virtual:react-inspector-options'))
-          return importee
-        else if (importee.startsWith('virtual:react-inspector-path:'))
+        if (importee.startsWith('virtual:react-inspector-options')) return importee
+        if (importee.startsWith('virtual:react-inspector-path:'))
           return importee.replace('virtual:react-inspector-path:', `${inspectorPath}/`)
       },
 
@@ -160,39 +184,45 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
         if (id === 'virtual:react-inspector-options') {
           return `export default ${JSON.stringify({ ...normalizedOptions, base: config.base })}`
         }
-        else if (id.startsWith(inspectorPath)) {
+        if (id.startsWith(inspectorPath)) {
           const { query } = parseRequest(id)
-          if (query.type)
-            return
+          if (query.type) return
           // read file ourselves to avoid getting shut out by vites fs.allow check
           let file = idToFile(id)
 
           // Handle React-specific file routing - use load-react.js
-          if (file.endsWith('/load.js'))
-            file = file.replace('/load.js', '/load-react.js')
+          if (file.endsWith('/load.js')) file = file.replace('/load.js', '/load-react.js')
 
-          if (fs.existsSync(file))
-            return await fs.promises.readFile(file, 'utf-8')
-          else
-            throw new Error(`Inspector: File not found: ${file}`)
+          if (fs.existsSync(file)) return await fs.promises.readFile(file, 'utf-8')
+          throw new Error(`Inspector: File not found: ${file}`)
         }
       },
-      transform(code, id) {
+      async transform(code, id) {
         const { filename } = parseRequest(id)
 
-        const isReactComponent = filename.endsWith('.jsx') || filename.endsWith('.tsx')
-          || (filename.endsWith('.js') && code.includes('jsx'))
-          || (filename.endsWith('.ts') && code.includes('jsx'))
+        const isReactComponent =
+          filename.endsWith('.jsx') ||
+          filename.endsWith('.tsx') ||
+          (filename.endsWith('.js') && code.includes('jsx')) ||
+          (filename.endsWith('.ts') && code.includes('jsx'))
 
-        if (isReactComponent)
-          return compileSFCTemplate({ code, id: filename, type: 'jsx', framework: 'react' })
+        if (isReactComponent) {
+          const transformedCode = await compileSFCTemplate({
+            code,
+            id: filename,
+            type: 'jsx',
+            framework: 'react',
+          })
+          return { code: transformedCode as string }
+        }
 
-        if (!appendTo)
-          return
+        if (!appendTo) return
 
         const virtualPath = 'virtual:react-inspector-path:load.js'
-        if ((typeof appendTo === 'string' && filename.endsWith(appendTo))
-          || (appendTo instanceof RegExp && appendTo.test(filename))) {
+        if (
+          (typeof appendTo === 'string' && filename.endsWith(appendTo)) ||
+          (appendTo instanceof RegExp && appendTo.test(filename))
+        ) {
           return { code: `${code}\nimport '${virtualPath}'` }
         }
       },
@@ -200,15 +230,16 @@ function VitePluginInspector(options: VitePluginInspectorOptions = DEFAULT_INSPE
         const _printUrls = server.printUrls
         const { toggleComboKey } = normalizedOptions
 
-        toggleComboKey && (server.printUrls = () => {
-          // const keys = normalizeComboKeyPrint(toggleComboKey)
-          _printUrls()
-          // console.log(`  ${green('➜')}  ${bold('React Inspector')}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
-        })
+        if (toggleComboKey) {
+          server.printUrls = () => {
+            // const keys = normalizeComboKeyPrint(toggleComboKey)
+            _printUrls()
+            // console.log(`  ${green('➜')}  ${bold('React Inspector')}: ${green(`Press ${yellow(keys)} in App to toggle the Inspector`)}\n`)
+          }
+        }
       },
       transformIndexHtml(html) {
-        if (appendTo)
-          return
+        if (appendTo) return
         const virtualPath = 'virtual:react-inspector-path:load.js'
         return {
           html,

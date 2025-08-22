@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+
+import { argv, exit } from 'node:process'
+import { build } from 'bun'
+
+const isDev = argv.includes('--watch') || argv.includes('--dev')
+
+if (isDev) {
+  console.warn('Building vite-plugin-react-inspector (watch mode)...')
+} else {
+  console.warn('Building vite-plugin-react-inspector...')
+}
+
+build({
+  entrypoints: ['src/index.ts'],
+  outdir: 'dist',
+  target: 'node',
+  format: 'esm',
+  minify: !isDev,
+  external: ['vite', 'react', 'react-dom'],
+  naming: '[dir]/[name].mjs',
+  sourcemap: isDev ? 'inline' : false,
+  watch: isDev,
+})
+  .then(async () => {
+    console.warn('✅ Main build completed successfully')
+
+    // Build overlay bundle
+    console.warn('Building overlay bundle...')
+    await build({
+      entrypoints: ['src/Overlay.standalone.jsx'],
+      outdir: 'dist',
+      target: 'browser',
+      format: 'esm',
+      minify: !isDev,
+      bundle: true,
+      external: ['react', 'react-dom'],
+      jsx: 'automatic',
+      sourcemap: isDev ? 'inline' : false,
+      watch: isDev,
+      naming: '[dir]/overlay.bundle.[ext]',
+    })
+
+    console.warn('✅ Overlay build completed successfully')
+    console.warn('✅ All builds completed successfully')
+  })
+  .catch(error => {
+    console.error('❌ Build failed:', error)
+    exit(1)
+  })

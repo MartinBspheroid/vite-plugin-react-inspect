@@ -1,14 +1,13 @@
-import type { Position } from '../utils/positioning'
-import { useMemo } from 'react'
 import inspectorOptions from 'virtual:react-inspector-options'
+import { useMemo } from 'react'
 import { shouldShowContainer } from '../utils/editor'
 import { parseToggleCombo } from '../utils/keyboard'
+import type { Position } from '../utils/positioning'
 import {
   calculateBannerPosition,
   calculateFloatPosition,
   calculateSizeIndicatorStyle,
   parseToggleButtonPosition,
-
 } from '../utils/positioning'
 
 // @ts-expect-error - Virtual module
@@ -43,8 +42,7 @@ export function useInspectorConfig(): InspectorConfig {
       floatsStyle: (position: Position, floatsElement: HTMLElement | null) =>
         calculateFloatPosition(position, floatsElement),
 
-      sizeIndicatorStyle: (position: Position) =>
-        calculateSizeIndicatorStyle(position),
+      sizeIndicatorStyle: (position: Position) => calculateSizeIndicatorStyle(position),
     }
   }, [])
 

@@ -8,9 +8,7 @@ export default defineConfig({
   tag: true,
   push: true,
   // Files to update version in
-  files: [
-    'packages/*/package.json'
-  ],
+  files: ['packages/*/package.json'],
   // Execute build before committing
-  execute: 'pnpm build'
+  execute: 'bun run build',
 })
