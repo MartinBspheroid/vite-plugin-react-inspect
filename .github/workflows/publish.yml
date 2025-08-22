@@ -1,20 +1,22 @@
-# DISABLED: This workflow conflicts with release.yml (Changesets)
-# Use release.yml for publishing instead
-name: Publish Package (DISABLED)
+name: Publish
 
 on:
-  workflow_dispatch: # Manual trigger only
-  # push:
-  #   tags:
-  #     - 'v*.*.*'
+  push:
+    tags:
+      - 'v*.*.*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   publish:
+    name: Publish
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y unzip
@@ -22,7 +24,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22' # Latest LTS version
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org/'
 
       - name: Set up Bun
@@ -47,11 +49,10 @@ jobs:
       - name: Build
         run: bun run build
 
-      # Copy README to core package for npm
+      # Copy README and LICENSE to packages for npm
       - name: Copy README to core package
         run: cp README.md packages/core/README.md
 
-      # Copy LICENSE to core package for npm
       - name: Copy LICENSE to core package
         run: cp LICENSE packages/core/LICENSE
 
@@ -60,11 +61,14 @@ jobs:
         id: get_version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      # Rename package for npm publishing
-      - name: Update package name for publishing
-        run: cd packages/core && npm pkg set name="vite-plugin-react-inspect"
-
-      - name: Publish Core Package
+      - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: cd packages/core && npm publish
+        run: |
+          echo "Publishing version: ${{ steps.get_version.outputs.version }}"
+          # Update package name for publishing
+          cd packages/core && npm pkg set name="vite-plugin-react-inspect"
+          # Set version from tag
+          cd packages/core && npm pkg set version="${{ steps.get_version.outputs.version }}"
+          # Publish the package
+          cd packages/core && npm publish
