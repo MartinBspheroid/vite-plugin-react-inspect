@@ -4,9 +4,9 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 import type { PluginOption, ResolvedConfig } from 'vite'
-import { normalizePath } from 'vite'
+
 import { compileSFCTemplate } from './compiler'
-import { idToFile, parseRequest } from './utils'
+import { idToFile, normalizePath, parseRequest } from './utils'
 
 export interface ReactInspectorClient {
   enabled: boolean

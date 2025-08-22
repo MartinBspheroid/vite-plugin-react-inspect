@@ -6,7 +6,7 @@ import importAttributesPlugin from '@babel/plugin-syntax-import-attributes'
 import importMeta from '@babel/plugin-syntax-import-meta'
 import typescriptPlugin from '@babel/plugin-transform-typescript'
 import MagicString from 'magic-string'
-import { normalizePath } from 'vite'
+import { normalizePath } from '../utils'
 
 const EXCLUDE_TAG = ['script', 'style']
 const KEY_DATA_REACT = 'data-react-inspector'

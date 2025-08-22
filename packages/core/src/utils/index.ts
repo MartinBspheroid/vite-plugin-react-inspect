@@ -61,3 +61,10 @@ export function idToFile(id: string): string {
   // strip query and hash
   return filepath.replace(hashRE, '').replace(queryRE, '')
 }
+
+export function normalizePath(path: string): string {
+  if (process.platform === 'win32') {
+    return path.replace(/\\/g, '/')
+  }
+  return path
+}

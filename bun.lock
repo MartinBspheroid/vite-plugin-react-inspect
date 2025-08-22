@@ -13,7 +13,7 @@
     },
     "packages/core": {
       "name": "vite-plugin-react-inspect",
-      "version": "1.1.11",
+      "version": "1.1.12",
       "dependencies": {
         "@babel/core": "^7.23.0",
         "@babel/plugin-proposal-decorators": "^7.23.0",
