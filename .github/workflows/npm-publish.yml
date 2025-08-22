@@ -13,33 +13,36 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y unzip
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22' # Latest LTS version
           registry-url: 'https://registry.npmjs.org/'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: latest
+          bun-version: latest
 
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-
+            ${{ runner.os }}-bun-
 
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint
+        run: bun run lint
 
       - name: Build
-        run: pnpm build
+        run: bun run build
 
       # Copy README to core package for npm
       - name: Copy README to core package
@@ -62,12 +65,3 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: cd packages/core && npm publish
-
-      # Update unplugin package dependency and publish
-      - name: Update unplugin dependency and publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          cd packages/unplugin
-          npm pkg set dependencies.vite-plugin-react-inspector="vite-plugin-react-inspect@^${{ steps.get_version.outputs.version }}"
-          npm publish
