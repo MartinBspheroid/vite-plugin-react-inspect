@@ -4,17 +4,18 @@
 pre-commit:
   
   commands:
+  # Format code with Biome
+    format:
+      glob: "*.{js,ts,jsx,tsx,json,md}"
+      run: bun run format
+      stage_fixed: true
+    
     # Check code quality with Biome (linting + formatting)
     check:
       glob: "*.{js,ts,jsx,tsx,json,md}"
       run: bun run check
       stage_fixed: true
     
-    # Format code with Biome
-    format:
-      glob: "*.{js,ts,jsx,tsx,json,md}"
-      run: bun run format
-      stage_fixed: true
     
     # Lint and auto-fix with Biome
     lint:
